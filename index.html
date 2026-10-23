@@ -111,6 +111,15 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .all li{padding:6px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:40px 1fr;gap:8px}
 .all li i{font-style:normal;font-family:var(--mono);color:var(--faint);font-size:11px;padding-top:2px}
 
+/* ── 가족 승객 메모 */
+.notes{display:grid;gap:12px;margin-top:14px}
+.note-card{background:var(--paper);padding:16px 16px 14px;border-left:3px solid var(--blue)}
+.note-card p{margin:0;white-space:pre-wrap;font-size:15px;line-height:1.75}
+.note-card footer{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:8px;border-top:1px solid var(--rule)}
+.note-card footer b{font-size:13.5px}
+.note-card footer span{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.notes-empty{background:var(--paper);padding:16px;color:var(--sub);font-size:14px}
+.write-link{display:inline-block;margin-top:12px;font-size:13.5px;font-weight:600;color:var(--blue);text-decoration:none;border-bottom:1px solid currentColor}
 /* ── 가족 인사 */
 .letter{background:var(--paper);padding:22px 20px 20px;border-top:3px solid var(--blue)}
 .letter p{margin:0 0 12px;font-size:15.5px;line-height:1.8}
@@ -218,6 +227,13 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
     <details class="all"><summary>논문·특허 제목 전체 보기</summary><ol id="shelf"></ol></details>
   </section>
 
+  <section aria-labelledby="h-notes" id="notes">
+    <div class="eyebrow">승객 메모</div>
+    <h2 id="h-notes">가족이 남긴 메모</h2>
+    <div class="notes" id="notelist"><div class="notes-empty">메모를 불러오는 중이에요…</div></div>
+    <a class="write-link" href="write/">메모 남기기 →</a>
+  </section>
+
   <section class="letter" aria-label="가족 인사">
     <p>기차가 더 편안하고 안전하게 달리도록 연구해 오신 시간, 정말 고생 많으셨습니다.</p>
     <p>수많은 열차를 시험하고 재던 박사님이 이제는 가장 편한 자리에 앉아 창밖을 즐기실 차례예요. 가고 싶은 역마다 천천히 내려서 쉬어 가세요.</p>
@@ -254,6 +270,16 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   ls.addEventListener('click',()=>play(true));
   sk.addEventListener('click',()=>play(false));
   off.addEventListener('click',()=>{if(au)au.pause();BGM.start();a.classList.add('gone');setTimeout(()=>{a.hidden=true},600)});
+})();
+// 가족 승객 메모 불러오기
+(function(){const API='',box=document.getElementById('notelist');
+  const empty=t=>{box.innerHTML='';const d=document.createElement('div');d.className='notes-empty';d.textContent=t;box.appendChild(d)};
+  if(!API||API.indexOf('http')!==0){empty('아직 도착한 메모가 없어요. 첫 메모를 남겨 주세요');return}
+  fetch(API).then(r=>r.json()).then(d=>{const rows=(d&&d.rows)||[];if(!rows.length){empty('아직 도착한 메모가 없어요. 첫 메모를 남겨 주세요');return}
+    box.innerHTML='';rows.forEach(r=>{const a=document.createElement('article');a.className='note-card';const p=document.createElement('p');p.textContent=r.msg;
+      const f=document.createElement('footer'),b=document.createElement('b'),s=document.createElement('span');b.textContent=r.name;
+      const t=new Date(r.t);s.textContent=isNaN(t)?'':(t.getMonth()+1)+'.'+t.getDate();f.appendChild(b);f.appendChild(s);a.appendChild(p);a.appendChild(f);box.appendChild(a)})
+  }).catch(()=>empty('메모를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요'));
 })();
 </script>
 

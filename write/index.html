@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex"><meta name="theme-color" content="#E9ECEF">
+<title>박사님께 메모 남기기</title>
+<meta property="og:title" content="박찬경 박사님께 메모 남기기"><meta property="og:description" content="인생 2막행 열차에 실을 가족 메모를 적어 주세요">
+<meta property="og:image" content="https://sohada2.github.io/park-retirement/og.jpg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--page:#E9ECEF;--paper:#fff;--ink:#1B1F24;--sub:#5E6672;--faint:#9AA1AB;--rule:#D6DADF;--blue:#1C4E9C;--red:#C21F32;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;color-scheme:light}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 60px}
+.wrap{max-width:460px;margin:0 auto;display:grid;gap:22px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--sub)}
+h1{font-size:clamp(26px,7.4vw,32px);line-height:1.2;margin:6px 0 8px;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--blue)}
+.lead{margin:0;color:var(--sub);font-size:14px}
+form{background:var(--paper);padding:18px 16px;display:grid;gap:14px;border-top:3px solid var(--blue)}
+label{display:grid;gap:6px;font-size:13px;font-weight:600}
+label small{font-weight:400;color:var(--faint)}
+input,textarea{font:inherit;color:var(--ink);background:#F6F7F9;border:1px solid var(--rule);border-radius:4px;padding:11px 12px;width:100%}
+textarea{min-height:170px;resize:vertical;line-height:1.7}
+input:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px;background:#fff}
+.count{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;margin-top:-8px}
+button{font:inherit;font-weight:700;font-size:15px;padding:14px;border:0;border-radius:4px;background:var(--blue);color:#fff;cursor:pointer}
+button[disabled]{background:#8D96A3;cursor:default}
+.err{color:var(--red);font-size:13px;margin:0}
+.done{background:var(--paper);padding:22px 16px;border-top:3px solid var(--blue)}
+.done h2{margin:0 0 6px;font-size:20px}
+.done p{margin:0 0 14px;color:var(--sub)}
+.done a{display:inline-block;color:var(--blue);font-weight:700;text-decoration:none;border-bottom:1px solid currentColor}
+.preview{margin-top:14px;padding:14px;background:#F6F7F9;border-left:3px solid var(--ink);white-space:pre-wrap;font-size:14.5px}
+.preview b{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
+.foot{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:center}
+</style></head><body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow">인생2막 특급 001열차 · 승객 메모</div>
+    <h1><em>박사님께</em><br>한마디 남겨 주세요</h1>
+    <p class="lead">적어 주신 메모는 퇴임 축하 페이지의 「가족 승객 메모」에 실려요. 박사님이 행사 날 함께 보시게 돼요.</p>
+  </header>
+  <form id="f" novalidate>
+    <label for="name">보내는 사람 <small>예: 큰딸 ○○, 사위 ○○</small><input id="name" name="name" maxlength="20" autocomplete="name" required></label>
+    <label for="msg">메모<textarea id="msg" name="msg" maxlength="800" required placeholder="그동안 고생 많으셨어요…"></textarea></label>
+    <div class="count"><span id="cnt">0</span> / 800</div>
+    <p class="err" id="err" hidden></p>
+    <button id="send" type="submit">메모 보내기</button>
+  </form>
+  <section class="done" id="done" hidden aria-live="polite">
+    <h2>메모가 실렸어요</h2>
+    <p>고마워요. 퇴임 축하 페이지에서 바로 볼 수 있어요.</p>
+    <a href="../#notes">퇴임 축하 페이지에서 보기 →</a>
+    <div class="preview" id="pv"></div>
+  </section>
+  <p class="foot">한 번 보낸 메모는 고칠 수 없어요. 고치고 싶으면 다시 보내 주시면 이전 것은 정리해 드릴게요.</p>
+</main>
+<script>
+const API='';
+const f=document.getElementById('f'),nm=document.getElementById('name'),ms=document.getElementById('msg'),er=document.getElementById('err'),bt=document.getElementById('send');
+const q=new URLSearchParams(location.search);if(q.get('n'))nm.value=q.get('n').slice(0,20);
+try{const d=localStorage.getItem('pck_draft');if(d&&!ms.value)ms.value=d}catch(e){}
+const upd=()=>{document.getElementById('cnt').textContent=ms.value.length;try{localStorage.setItem('pck_draft',ms.value)}catch(e){}};ms.addEventListener('input',upd);upd();
+f.addEventListener('submit',async e=>{e.preventDefault();er.hidden=true;
+  const name=nm.value.trim(),msg=ms.value.trim();
+  if(!name){er.textContent='보내는 사람 이름을 적어 주세요';er.hidden=false;nm.focus();return}
+  if(!msg){er.textContent='메모 내용을 적어 주세요';er.hidden=false;ms.focus();return}
+  if(!API||API.indexOf('http')!==0){er.textContent='아직 메모함이 준비되지 않았어요. 조금 뒤에 다시 시도해 주세요';er.hidden=false;return}
+  bt.disabled=true;bt.textContent='보내는 중…';
+  try{await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({name,msg})});
+    try{localStorage.removeItem('pck_draft')}catch(e){}
+    f.hidden=true;const pv=document.getElementById('pv');pv.innerHTML='';const b=document.createElement('b');b.textContent=name;pv.appendChild(b);pv.appendChild(document.createTextNode(msg));document.getElementById('done').hidden=false;
+  }catch(err){er.textContent='보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요';er.hidden=false;bt.disabled=false;bt.textContent='메모 보내기'}
+});
+</script>
+</body></html>
