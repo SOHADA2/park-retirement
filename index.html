@@ -44,6 +44,8 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .sign .tr b{color:var(--blue)}
 .off{background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:13px 34px;border-radius:999px;opacity:0;transition:opacity .5s}
 .off.on{opacity:1}
+.skip{font-size:12.5px;color:#8E97A4;text-decoration:underline;text-underline-offset:3px;margin-top:-12px}
+.ann .chime.live{color:#8FB4EA}
 .off:focus-visible{outline:3px solid #8FB4EA;outline-offset:4px}
 /* ── 본문 환승 안내 */
 .xfer{background:var(--paper);border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.05),0 8px 20px rgba(27,31,36,.08);margin-top:14px}
@@ -136,7 +138,9 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
     <div class="en">1997 — 2026</div>
     <div class="tr"><span>환승</span><b>인생 2막 방면 ▸</b></div>
   </div>
-  <button class="off" id="off" type="button">내리기</button>
+  <button class="off on" id="listen" type="button">안내방송 듣기</button>
+  <button class="off" id="off" type="button" hidden>내리기</button>
+  <button class="skip" id="skip" type="button">소리 없이 보기</button>
 </div>
 <button class="bgm" id="bgm" type="button" hidden aria-pressed="false">♪ 음악 끄기</button>
 
@@ -237,11 +241,19 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   b.addEventListener('click',()=>on?stop():start());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)au.pause();else if(on)au.play().catch(()=>{})});
   return {start}})();
-// 첫 화면: 종착역 도착
-(function(){const a=document.getElementById('arrive'),ps=[...document.querySelectorAll('#ann p')],off=document.getElementById('off');
-  ps.forEach((p,i)=>setTimeout(()=>p.classList.add('on'),reduce?0:600+i*1500));
-  setTimeout(()=>off.classList.add('on'),reduce?0:600+ps.length*1500);
-  off.addEventListener('click',()=>{BGM.start();a.classList.add('gone');setTimeout(()=>{a.hidden=true},600)});
+// 첫 화면: 종착역 도착 — 누르면 「딩동댕」+ 안내방송(ann.mp3), 방송에 맞춰 문구가 한 줄씩
+(function(){const a=document.getElementById('arrive'),ps=[...document.querySelectorAll('#ann p')],off=document.getElementById('off'),ls=document.getElementById('listen'),sk=document.getElementById('skip'),ch=document.querySelector('#ann .chime');
+  const AT=[2.9,10.0,18.6],END=23.4;let au=null,ended=false;
+  const showOff=()=>{if(ended)return;ended=true;off.hidden=false;requestAnimationFrame(()=>off.classList.add('on'));off.focus()};
+  function play(withSound){ls.hidden=true;sk.hidden=true;
+    if(withSound){au=new Audio('ann.mp3');au.volume=.9;ch.classList.add('live');ch.textContent='♪ 안내 방송 중';
+      au.addEventListener('timeupdate',()=>{ps.forEach((p,i)=>{if(au.currentTime>=AT[i])p.classList.add('on')});if(au.currentTime>=END-.3)showOff()});
+      au.addEventListener('ended',()=>{ps.forEach(p=>p.classList.add('on'));ch.textContent='♪ 안내 방송';showOff()});
+      au.play().catch(()=>play(false));}
+    else{ps.forEach((p,i)=>setTimeout(()=>p.classList.add('on'),reduce?0:400+i*1400));setTimeout(showOff,reduce?0:400+ps.length*1400)}}
+  ls.addEventListener('click',()=>play(true));
+  sk.addEventListener('click',()=>play(false));
+  off.addEventListener('click',()=>{if(au)au.pause();BGM.start();a.classList.add('gone');setTimeout(()=>{a.hidden=true},600)});
 })();
 </script>
 
