@@ -94,26 +94,61 @@ section .sub{font-size:12px;color:#AEB6CC;margin:0 0 16px}
 canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:20}
 @media (prefers-reduced-motion:reduce){.bgtitles div{animation:none}.go .train{animation:none;left:calc(50% - 120px)}.stamp{transition:none}}
 
-/* 출발 전광판 인트로 */
-.intro{position:fixed;inset:0;z-index:30;background:#05070D;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));transition:opacity .6s,visibility .6s}
-.intro.gone{opacity:0;visibility:hidden}
-.ib{width:min(520px,100%);background:#111620;border:2px solid #2A3245;border-radius:10px;padding:14px 12px 16px;box-shadow:0 0 0 6px #0B0F18,0 20px 50px rgba(0,0,0,.6)}
-.ib .hd{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.2em;color:#7F8AA6;padding:0 4px 10px;border-bottom:1px solid #263047;margin-bottom:12px}
-.ib .hd b{color:#FFC93C;font-weight:600}
-.ib .row{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;margin:8px 0}
-.ib .k{font-size:11px;color:#7F8AA6;letter-spacing:.12em}
-.flap{display:flex;flex-wrap:wrap;gap:3px;min-width:0}
-.flap span{display:inline-grid;place-items:center;min-width:1.15em;height:1.6em;padding:0 2px;background:linear-gradient(#1C2333 0 49%,#0E131E 51%);border-radius:3px;
-  color:#FFD25C;font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;box-shadow:inset 0 -1px 0 #000}
-.flap span.sp{background:none;box-shadow:none;min-width:.45em}
-.flap.big span{font-size:20px}
-.flap.red span{color:#FF7A7A}
-.ib .ft{margin-top:12px;padding-top:10px;border-top:1px solid #263047;font-size:12px;color:#AEB6CC;display:flex;align-items:center;gap:8px}
-.ib .dot{width:8px;height:8px;border-radius:50%;background:#3CE07A;box-shadow:0 0 6px #3CE07A;animation:blink 1s steps(2) infinite}
-@keyframes blink{50%{opacity:.2}}
-.boardbtn{background:#FFC93C;color:#111620;font-weight:700;font-size:16px;padding:13px 28px;border-radius:999px}
+/* 연구 노선 지도 */
+.net{margin-top:12px;background:#F7F3E8;border-radius:16px;padding:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.net svg{display:block;width:100%;height:auto}
+.lines{display:grid;gap:8px;margin-top:12px}
+.lines details{background:rgba(251,246,234,.06);border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+.lines summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 12px;font-size:14px;font-weight:600}
+.lines summary::-webkit-details-marker{display:none}
+.lines summary i{width:26px;height:8px;border-radius:4px;flex:none}
+.lines summary em{margin-left:auto;font-style:normal;font-size:12px;color:#AEB6CC;font-variant-numeric:tabular-nums}
+.lines summary:focus-visible{outline:2px solid var(--gold2);outline-offset:2px;border-radius:12px}
+.lines ol{margin:0;padding:0 14px 12px 34px;font-size:12.5px;line-height:1.65;color:#D7DCEA;max-height:240px;overflow:auto}
+.lines ol li::marker{color:#8D96AE;font-size:11px}
+/* 처음 화면 — 역 LED 전광판 */
+.intro{position:fixed;inset:0;z-index:30;background:radial-gradient(120% 70% at 50% 0%,#141A28 0%,#06080E 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  padding-block:20px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));transition:opacity .4s}
+.intro.gone{opacity:0;pointer-events:none}
+.station{font-size:11px;letter-spacing:.42em;color:#7D879F;text-align:center}
+.station b{display:block;font-family:var(--f-display);font-size:22px;letter-spacing:.12em;color:#E7EAF2;margin-top:6px}
+.led{position:relative;width:min(560px,100%);background:#07090C;border-radius:8px;padding:12px 12px 10px;
+  box-shadow:0 0 0 3px #2A303C,0 0 0 9px #11151D,0 0 0 10px #39404E,0 30px 60px rgba(0,0,0,.7)}
+.led:after{content:"";position:absolute;inset:0;border-radius:8px;pointer-events:none;
+  background:radial-gradient(circle,transparent 45%,rgba(7,9,12,.85) 55%) 0 0/3px 3px}
+.led .top{display:flex;justify-content:space-between;align-items:center;color:#FF9E2C;font-weight:700;font-size:13px;letter-spacing:.08em;padding:2px 4px 8px;border-bottom:1px solid #1E232C}
+.led .top .clk{font-variant-numeric:tabular-nums;letter-spacing:.12em}
+.led .cols,.led .r{display:grid;grid-template-columns:58px 1fr 62px;gap:8px;align-items:center;padding:0 4px}
+.led .cols{font-size:10px;color:#6E7686;letter-spacing:.14em;padding-top:8px;padding-bottom:4px}
+.led .r{font-weight:700;font-size:14px;color:#FF9E2C;height:30px;border-bottom:1px dashed #171B22;font-variant-numeric:tabular-nums;white-space:nowrap}
+.led .r>span{overflow:hidden;text-overflow:clip;min-width:0}
+.led .r .st{font-size:12px;text-align:right;color:#8A6A3E}
+.led .r.done{color:#9A6A2C}
+.led .r.now{color:#FFC34A;height:38px;font-size:16px;text-shadow:0 0 6px rgba(255,170,60,.55)}
+.led .r.now .st{color:#5BFF8A;text-shadow:0 0 6px rgba(80,255,130,.6);animation:ledblink 1s steps(2) infinite}
+@keyframes ledblink{50%{opacity:.25}}
+.led .tick{margin-top:8px;overflow:hidden;white-space:nowrap;color:#FFB347;font-weight:700;font-size:13px;border-top:1px solid #1E232C;padding-top:8px}
+.led .tick span{display:inline-block;padding-left:100%;animation:tick 16s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+.boardbtn{background:#FFC93C;color:#111620;font-weight:700;font-size:16px;padding:14px 32px;border-radius:999px;box-shadow:0 6px 0 #B5861A}
+.boardbtn:active{transform:translateY(3px);box-shadow:0 3px 0 #B5861A}
 .boardbtn:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.platform{font-size:12px;color:#7D879F;display:flex;gap:10px;align-items:center}
+.platform i{display:inline-block;width:26px;height:26px;border-radius:50%;background:#FFC93C;color:#111620;font-style:normal;font-weight:800;display:grid;place-items:center}
+/* 열차 문 */
+.doors{position:fixed;inset:0;z-index:35;display:none;pointer-events:none}
+.doors.on{display:block}
+.door{position:absolute;top:0;bottom:0;width:50.5%;background:linear-gradient(90deg,#AEB6C4,#D7DCE4 40%,#B9C0CC);
+  transition:transform 1.1s cubic-bezier(.65,0,.35,1)}
+.door.l{left:0;border-right:3px solid #59606E}
+.door.r{right:0;border-left:3px solid #59606E}
+.door:before{content:"";position:absolute;top:16%;height:34%;width:62%;border-radius:14px;background:linear-gradient(160deg,#2B3D63,#0D1A33);box-shadow:inset 0 0 0 6px #8E96A6}
+.door.l:before{right:14%}.door.r:before{left:14%}
+.door:after{content:"";position:absolute;bottom:0;left:0;right:0;height:9%;background:#E3B23C;opacity:.9}
+.door .lamp{position:absolute;top:6%;width:14px;height:14px;border-radius:50%;background:#FF5A4F;box-shadow:0 0 10px #FF5A4F}
+.door.l .lamp{right:12px}.door.r .lamp{left:12px}
+.doors.open .door.l{transform:translateX(-102%)}
+.doors.open .door.r{transform:translateX(102%)}
 /* 절취선 당겨 찢기 */
 .stub{transition:transform .45s cubic-bezier(.2,1.4,.4,1)}
 .stub.dragging{transition:none}
@@ -149,18 +184,23 @@ h3.mini{font-size:15px;margin:22px 0 0;color:var(--gold2);letter-spacing:.04em}
 
 <div class="bgtitles" aria-hidden="true" id="bgt"></div>
 <canvas id="confetti" aria-hidden="true"></canvas>
-<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="열차 출발 안내">
-  <div class="ib">
-    <div class="hd"><span>출발 안내 · DEPARTURES</span><b>2026.10</b></div>
-    <div class="row"><span class="k">열차</span><div class="flap big" data-text="인생2막 특급"></div></div>
-    <div class="row"><span class="k">승객</span><div class="flap" data-text="박찬경 박사님"></div></div>
-    <div class="row"><span class="k">출발</span><div class="flap" data-text="한국철도기술연구원"></div></div>
-    <div class="row"><span class="k">도착</span><div class="flap red" data-text="행복한 인생 2막"></div></div>
-    <div class="row"><span class="k">좌석</span><div class="flap" data-text="평생 VIP석"></div></div>
-    <div class="ft"><span class="dot"></span>지금 탑승을 시작합니다</div>
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="출발 안내">
+  <div class="station">PLATFORM<b>인생2막역</b></div>
+  <div class="led" aria-hidden="false">
+    <div class="top"><span>출발 DEPARTURE</span><span class="clk" id="clk">--:--</span></div>
+    <div class="cols"><span>시각</span><span>행선지</span><span style="text-align:right">상태</span></div>
+    <div class="r done"><span>1997</span><span>차량연구부</span><span class="st">운행 완료</span></div>
+    <div class="r done"><span>2000</span><span>고속철도기술개발사업단</span><span class="st">운행 완료</span></div>
+    <div class="r done"><span>2008</span><span>차세대고속철도사업단</span><span class="st">운행 완료</span></div>
+    <div class="r done"><span>2011</span><span>시험인증안전센터</span><span class="st">운행 완료</span></div>
+    <div class="r done"><span>2016</span><span>형식승인팀</span><span class="st">운행 완료</span></div>
+    <div class="r now"><span>26.10</span><span id="dest">행복한 인생 2막</span><span class="st">탑승 중</span></div>
+    <div class="tick"><span>이번 열차는 박찬경 박사님 전용 인생2막 특급열차입니다 · 좌석은 평생 VIP석입니다 · 그동안 정말 고생 많으셨습니다 · 승차권을 준비해 주세요</span></div>
   </div>
+  <div class="platform"><i>1</i>타는 곳 1번 · 승객 박찬경 박사님</div>
   <button class="boardbtn" id="enter" type="button">탑승하기</button>
 </div>
+<div class="doors" id="doors" aria-hidden="true"><div class="door l"><span class="lamp"></span></div><div class="door r"><span class="lamp"></span></div></div>
 <main class="wrap">
   <article class="ticket" id="ticket" aria-label="인생 2막행 승차권">
     <div class="band"><span>인생 2막행 · LIFE EXPRESS</span><span>승차권</span></div>
@@ -213,6 +253,10 @@ h3.mini{font-size:15px;margin:22px 0 0;color:var(--gold2);letter-spacing:.04em}
       <div class="num"><b>104</b><small>편의 논문</small></div>
       <div class="num"><b>43</b><small>건의 특허</small></div>
     </div>
+    <h3 class="mini">박사님의 연구 노선 지도</h3>
+    <p class="note" style="margin-top:4px">논문·특허 147건을 주제별 노선으로 나눴어요. 노선을 누르면 그 노선의 역(제목)이 보여요</p>
+    <div class="net"><svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="주제별 연구 노선 지도"><defs><pattern id="gd" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#E6DFCD" stroke-width="1"/></pattern></defs><rect width="360" height="360" rx="12" fill="url(#gd)"/><path d="M180.0 180.0 L180.0 110.0 L152.8 26.3" stroke="#E3A21A" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="180.0" cy="131.5" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="180.0" cy="123.1" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="180.0" cy="114.6" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="177.2" cy="101.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="171.1" cy="82.7" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="165.0" cy="63.9" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="158.9" cy="45.1" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="152.8" cy="26.3" r="15" fill="#E3A21A" stroke="#fff" stroke-width="3"/><text x="152.8" y="30.3" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">28</text><path d="M180.0 180.0 L246.6 158.4 L334.6 158.4" stroke="#D2343F" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="228.8" cy="164.2" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="239.5" cy="160.7" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="255.6" cy="158.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="281.9" cy="158.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="308.2" cy="158.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="334.6" cy="158.4" r="15" fill="#D2343F" stroke="#fff" stroke-width="3"/><text x="334.6" y="162.4" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">20</text><path d="M180.0 180.0 L221.1 236.6 L292.3 288.4" stroke="#2E9E62" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="207.9" cy="218.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="212.4" cy="224.5" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="216.8" cy="230.6" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="221.3" cy="236.8" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="235.5" cy="247.1" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="249.7" cy="257.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="263.9" cy="267.7" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="278.1" cy="278.0" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="292.3" cy="288.4" r="15" fill="#2E9E62" stroke="#fff" stroke-width="3"/><text x="292.3" y="292.4" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">57</text><path d="M180.0 180.0 L138.9 236.6 L67.7 288.4" stroke="#1F4FA3" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="148.5" cy="223.3" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="140.6" cy="234.3" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="118.8" cy="251.2" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="93.2" cy="269.8" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="67.7" cy="288.4" r="15" fill="#1F4FA3" stroke="#fff" stroke-width="3"/><text x="67.7" y="292.4" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">16</text><path d="M180.0 180.0 L113.4 158.4 L25.4 158.4" stroke="#7B5BD6" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="132.8" cy="164.7" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="123.6" cy="161.7" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="114.4" cy="158.7" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="93.1" cy="158.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="70.6" cy="158.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="48.0" cy="158.4" r="4.6" fill="#fff" stroke="#16223F" stroke-width="2"/><circle cx="25.4" cy="158.4" r="15" fill="#7B5BD6" stroke="#fff" stroke-width="3"/><text x="25.4" y="162.4" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">26</text><rect x="128" y="160" width="104" height="40" rx="20" fill="#fff" stroke="#16223F" stroke-width="3.5"/><text x="180" y="186" font-size="17" font-weight="800" fill="#16223F" text-anchor="middle" font-family="Nanum Myeongjo,serif">박찬경</text></svg></div>
+    <div class="lines" id="lines"><details><summary><i style="background:#E3A21A"></i>집전·전기선<em>28역</em></summary><ol><li>전기철도 시험 계측 시스템 <span style="color:#8D96AE">(2002)</span></li><li>철도 차량의 전기 장치 온도 감지 시스템 <span style="color:#8D96AE">(2002)</span></li><li>추진장치 성능측정 시스템에 관한 연구 <span style="color:#8D96AE">(2003)</span></li><li>전장품의 제어신호와 철도 차량 통신망을 이용한신호측정장치 <span style="color:#8D96AE">(2003)</span></li><li>철도차량 배터리 충전기의 온도계측장치 <span style="color:#8D96AE">(2003)</span></li><li>고속철도 전기제동 특성에 관한 연구 <span style="color:#8D96AE">(2004)</span></li><li>전기철도차량의 배터리 충전기 진단 시스템 <span style="color:#8D96AE">(2004)</span></li><li>전기철도차량의 전력공급 감시 시스템 <span style="color:#8D96AE">(2004)</span></li><li>전기철도차량의 전장품상태 보조측정 시스템 <span style="color:#8D96AE">(2004)</span></li><li>추진시스템의 고장진단에 관한 연구 <span style="color:#8D96AE">(2005)</span></li><li>한국형 고속열차 전력시스템 특성 연구 <span style="color:#8D96AE">(2005)</span></li><li>전기철도차량 고조파 전류 시험 <span style="color:#8D96AE">(2006)</span></li><li>차세대 고속철도기술개발사업 추진방향 <span style="color:#8D96AE">(2006)</span></li><li>한국형 고속열차 전기시스템 특성 연구 <span style="color:#8D96AE">(2006)</span></li><li>전기철도 차량 집전장치의 회전각도 측정 지그 <span style="color:#8D96AE">(2009)</span></li><li>고속열차 추진성능 시험평가 <span style="color:#8D96AE">(2010)</span></li><li>고속철도용 판토그라프 성능 계측 연구 <span style="color:#8D96AE">(2010)</span></li><li>고속철도용 판토그라프 접촉력 측정을 위한 스트레인 게이지 내장형 하중센서 개발 <span style="color:#8D96AE">(2010)</span></li><li>판토그라프 접촉력 측정을 위한 스트레인 게이지 내장형 센서 개발 <span style="color:#8D96AE">(2010)</span></li><li>전기철도의 집전성능정보 전송용 광케이블 절연 튜브 <span style="color:#8D96AE">(2010)</span></li><li>회전각도 측정을 이용한 전기철도 차량용 집전장치의 물리량 측정 시스템 <span style="color:#8D96AE">(2010)</span></li><li>유한 요소 해석 기법을 이용한 고속 철도 차량의 집전 성능 해석 <span style="color:#8D96AE">(2011)</span></li><li>전기철도 차량 집전장치 접촉력 측정 센서 <span style="color:#8D96AE">(2011)</span></li><li>전기철도 차량 집전장치의 접촉력 측정 센서 <span style="color:#8D96AE">(2011)</span></li><li>철도 차량용 판토그라프 <span style="color:#8D96AE">(2012)</span></li><li>전기철도차량의 제동패드 냉각 및 분진 흡수 시스템 및 방법 <span style="color:#8D96AE">(2015)</span></li><li>특허분석을 통한 철도차량용 추진제어장치 기술 분석 <span style="color:#8D96AE">(2018)</span></li><li>열차용 자동운전장치의 시험 장치 및 방법 <span style="color:#8D96AE">(2021)</span></li></ol></details><details><summary><i style="background:#D2343F"></i>안전·검지선<em>20역</em></summary><ol><li>철도차량 동특성 해석을 위한 휠/레일 상호작용의 선형모델링 연구 <span style="color:#8D96AE">(1998)</span></li><li>고속전철의 와전류 제동장치 동적 거동특성 연구 <span style="color:#8D96AE">(2001)</span></li><li>고속전철의 와전류 제동장치 동적 최적화 연구 <span style="color:#8D96AE">(2001)</span></li><li>바람이 고속전철의 동적 안전성에 미치는 영향 분석 <span style="color:#8D96AE">(2001)</span></li><li>철도 차량의 차축 속도 검지 장치 <span style="color:#8D96AE">(2002)</span></li><li>한국형 고속전철의 기계 제동력 측정 방법 <span style="color:#8D96AE">(2003)</span></li><li>시운전시험을 통한 고속철도 차량의 제동 특성에 관한 연구 <span style="color:#8D96AE">(2004)</span></li><li>제동에너지 관점에서의 최적 디스크 제동력 패턴 설정 <span style="color:#8D96AE">(2006)</span></li><li>철도차량의 견인력 및 제동력 측정 시스템 및 그 방법 <span style="color:#8D96AE">(2006)</span></li><li>고속철도 차량의 제동성능 해석에 대한 실험적 검증 <span style="color:#8D96AE">(2007)</span></li><li>고저틀림에 따른 차세대고속열차의 주행안전성 영향 분석 <span style="color:#8D96AE">(2010)</span></li><li>완화곡선형상별 차량주행안전성 및 승차감 분석 <span style="color:#8D96AE">(2010)</span></li><li>제동 패드의 압축강도시편의 단면치수변화가 압축강도 불확도에 미치는 영향 분석 <span style="color:#8D96AE">(2014)</span></li><li>열차의 모진 주행에 대한 경보 제공 시스템 및 방법 <span style="color:#8D96AE">(2014)</span></li><li>충돌시험장치 및 이를 이용한 충돌시험방법 <span style="color:#8D96AE">(2014)</span></li><li>외란 신호 검지 기능을 갖는 차상장치 및 그 장치를 이용한 외란 신호 검지 방법 <span style="color:#8D96AE">(2015)</span></li><li>자동폐색장치를 활용한 일반철도 노선의 철도선로변 작업자용 안전설비 시스템 <span style="color:#8D96AE">(2016)</span></li><li>분산형 음향 검지기술로 측정된 진동 데이터의 이미지 변환을 통한 레일절손 검지 방법 <span style="color:#8D96AE">(2022)</span></li><li>열차 관제장치 및 그 관제방법 <span style="color:#8D96AE">(2022)</span></li><li>복합 방식 레일절손 판단시스템 및 이를 이용한 레일절손 판단방법 <span style="color:#8D96AE">(2023)</span></li></ol></details><details><summary><i style="background:#2E9E62"></i>승차감·진동선<em>57역</em></summary><ol><li>전후동력 새마을호 철도차량의 진동성능 개선에 관한 연구 <span style="color:#8D96AE">(1997)</span></li><li>Vampire를 이용한 경부고속철도 차량의 동적 안정성 해석 <span style="color:#8D96AE">(1998)</span></li><li>관절형 경량전철의 현가특성 설계 및 안정성 해석 <span style="color:#8D96AE">(1998)</span></li><li>관절형 경량전철의 주행성능 해석 <span style="color:#8D96AE">(1999)</span></li><li>철도차량 현수장치의 탈선에 대한 민감도 연구 <span style="color:#8D96AE">(1999)</span></li><li>G7 고속전철기술개발사업과 동역학 및 제어분야 기술개발 <span style="color:#8D96AE">(2000)</span></li><li>대차프레임의 피로설계 및 피로강도 평가 <span style="color:#8D96AE">(2000)</span></li><li>반응표면모델에 의한 철도 차량 대차의 탄성조인트 최적설계 <span style="color:#8D96AE">(2000)</span></li><li>철도차량 동적 진동특성을 고려한 다목적함수 최적설계 <span style="color:#8D96AE">(2000)</span></li><li>경부고속철도 시험선 구간에서 G7 고속전철 차량의 동특성 검토 <span style="color:#8D96AE">(2001)</span></li><li>고속전철의 동적특성에 따른 효율적인 현가장치 최적화 방안 연구 <span style="color:#8D96AE">(2001)</span></li><li>반응표면모델을 이용한 한국형 고속전철 현가장치의 효율적인 최적설계 <span style="color:#8D96AE">(2002)</span></li><li>비선형 크립이론을 이용한 한국형 고속전철의 동특성 해석 <span style="color:#8D96AE">(2002)</span></li><li>신경회로망 모델을 이용한 철도 현가장치 설계변수 최적화 <span style="color:#8D96AE">(2002)</span></li><li>신경회로망 모델을 이용한 철도 현가장치 설계변수 최적화 <span style="color:#8D96AE">(2002)</span></li><li>철도 승차감 평가방법의 상호관계 분석 <span style="color:#8D96AE">(2002)</span></li><li>철도 승차감 측정 시스템 <span style="color:#8D96AE">(2002)</span></li><li>UIC 및 ISO 규정에 따른 철도 차량용 승차감 측정시스템 개발 <span style="color:#8D96AE">(2003)</span></li><li>국내 고속철도 차량의 승차감에 대한 고찰 <span style="color:#8D96AE">(2003)</span></li><li>시운전 시험을 통한 한국형 고속전철 차체진동 특성의 분석 및 평가 <span style="color:#8D96AE">(2003)</span></li><li>시운전 시험을 통한 한국형 고속전철에 대한 승차감의 분석 <span style="color:#8D96AE">(2003)</span></li><li>시운전 시험을 통한 한국형 고속전철의 차체진동 특성 <span style="color:#8D96AE">(2003)</span></li><li>한국형 고속전철의 주행시험과 이론해석 결과의 비교분석 <span style="color:#8D96AE">(2003)</span></li><li>한국형 고속전철의 주행시험을 통한 진동 모드 분석 연구 <span style="color:#8D96AE">(2003)</span></li><li>한국형 고속전철의 주행조건에 따른 진동특성 분석에 관한 연구 <span style="color:#8D96AE">(2003)</span></li><li>한국형 고속전철의 주행진동 특성에 관한 연구 <span style="color:#8D96AE">(2003)</span></li><li>한국형 고속전철의 진동가속도 시험 연구 <span style="color:#8D96AE">(2003)</span></li><li>한국형 고속전철의 차체 진동특성 분석 <span style="color:#8D96AE">(2003)</span></li><li>철도차량의 주행속도 및 이동거리 측정 시스템 <span style="color:#8D96AE">(2003)</span></li><li>철도차량의 차륜 활주 감지 시스템 <span style="color:#8D96AE">(2003)</span></li><li>고속선/기존선 연계운행에 대한 고속철도 차량의 승차감에 관한 연구 <span style="color:#8D96AE">(2004)</span></li><li>고속선/기존선 운행에 따른 고속철도 차량의 승차감 특성 분석 <span style="color:#8D96AE">(2004)</span></li><li>고속철도차량의 주행 특성에 관한 연구 <span style="color:#8D96AE">(2004)</span></li><li>다기능성을 갖는 철도 차량용 승차감 측정시스템 개발 <span style="color:#8D96AE">(2004)</span></li><li>한국형 고속전철 현가장치 최적설계를 위한 반응표면모델과 유전자 알고리즘 모델에 관한 연구 <span style="color:#8D96AE">(2004)</span></li><li>한국형 고속전철의 기존선 주행 진동가속도 특성 분석 - 곡선 통과속도 중심으로 <span style="color:#8D96AE">(2004)</span></li><li>철도차량의 승차감 종합측정시스템 <span style="color:#8D96AE">(2004)</span></li><li>시운전 시험을 통한 한국형 고속열차의 승차감 변화추세에 관한 연구 <span style="color:#8D96AE">(2005)</span></li><li>한국형 고속열차의 350km/h 본선 주행시험을 통해 본 고속열차용 팬터그래프의 이선 특성과 동적 특성 고찰 <span style="color:#8D96AE">(2005)</span></li><li>한국형 고속전철의 350Km/h 주행에 대한 진동 가속도 분석 <span style="color:#8D96AE">(2005)</span></li><li>UIC 518의 진동 가속도 계측을 통한 한국형 고속전철의 350km/h 주행 동적 거동 평가 <span style="color:#8D96AE">(2006)</span></li><li>도시철도차량의 차륜마모에 따른 횡가속도 패턴분석 <span style="color:#8D96AE">(2006)</span></li><li>한국형고속열차 횡방향 진동제어 <span style="color:#8D96AE">(2006)</span></li><li>개념단계에서 차세대고속철도 6량 편성차량의 현가요소 특성 분석 <span style="color:#8D96AE">(2008)</span></li><li>개념적 관점에서 차세대고속철도차량의 현가요소 특성 분석 <span style="color:#8D96AE">(2008)</span></li><li>고속철도 승차감 평가에 통계적 기법의 적용 <span style="color:#8D96AE">(2008)</span></li><li>추리통계학을 이용한 고속철도 승차감 평가에 대한 고찰 <span style="color:#8D96AE">(2008)</span></li><li>기본설계 단계에서 분산형 고속철도차량의 현가요소 최적화 <span style="color:#8D96AE">(2009)</span></li><li>승차감 평가를 위한 주파수 보정곡선의 분석 <span style="color:#8D96AE">(2010)</span></li><li>신한국형고속열차의 주행저항 성능시험 <span style="color:#8D96AE">(2010)</span></li><li>철도차량의 주행패턴 최적화에 대한 연구 <span style="color:#8D96AE">(2010)</span></li><li>EN규격을 적용한 철도차량의 승차감 평가 <span style="color:#8D96AE">(2011)</span></li><li>z변환을 이용한 시간영역에서의 승차감 평가 <span style="color:#8D96AE">(2011)</span></li><li>고속열차 현가장치 특성 민감도 분석 연구 <span style="color:#8D96AE">(2011)</span></li><li>철도차량 장치의 진동 및 충격시험 방법 비교 분석 <span style="color:#8D96AE">(2013)</span></li><li>철도차량 차륜의 기계적 특성 및 잔류응력평가 <span style="color:#8D96AE">(2014)</span></li><li>철도차량용 공기압축기의 진동 테스트 장치와 이를 이용하여 균형추를 설계하는 방법 <span style="color:#8D96AE">(2016)</span></li></ol></details><details><summary><i style="background:#1F4FA3"></i>고속철도선<em>16역</em></summary><ol><li>동적거동 관점에서의 돌풍에 대한 고속전철 운행속도 영향 연구 <span style="color:#8D96AE">(2001)</span></li><li>고속철도 시운전시험 계측시스템 개발에 관한 연구 <span style="color:#8D96AE">(2002)</span></li><li>고속철도 시운전시험 및 평가용 측정시스템 개발(II) - 소프트웨어 <span style="color:#8D96AE">(2002)</span></li><li>KTX 견인, 재동성능용 계측시스템 구축 <span style="color:#8D96AE">(2003)</span></li><li>고속철도 교량/토공 접속부에서의 궤도 및 차량 거동 특성 <span style="color:#8D96AE">(2003)</span></li><li>고속철도차량 보조전원장치 특성 연구 <span style="color:#8D96AE">(2004)</span></li><li>시험을 통한 한국형 고속전철 차량의 속도에 따른 실내소음 수준분석 <span style="color:#8D96AE">(2004)</span></li><li>한국형 고속전철 개발열차의 차량별 속도에 따른 실내 소음 특성 분석 <span style="color:#8D96AE">(2004)</span></li><li>고속철도차량 차체 외부압력계측시스템 <span style="color:#8D96AE">(2004)</span></li><li>고속열차의 차간 공간에 의해 발생하는 실내소음 특성 분석 <span style="color:#8D96AE">(2006)</span></li><li>고속열차의 차간 공간에서 발생하는 공력소음의 특성 <span style="color:#8D96AE">(2006)</span></li><li>한국형 고속열차 신뢰성 시험평가 요건관리 체계 구축 <span style="color:#8D96AE">(2006)</span></li><li>한국형고속열차 차량시스템의 신뢰성 성장 평가 <span style="color:#8D96AE">(2006)</span></li><li>한국형고속열차의 가속도계를 이용한 궤도 불규칙도 검측 <span style="color:#8D96AE">(2006)</span></li><li>한국형고속열차의 디스크-패드 마찰계수 측정에 관한 연구 <span style="color:#8D96AE">(2006)</span></li><li>한국형 고속열차의 공익적 목적 활용방안 대안 연구 <span style="color:#8D96AE">(2008)</span></li></ol></details><details><summary><i style="background:#7B5BD6"></i>시험·계측선<em>26역</em></summary><ol><li>도시철도차량의 동적 차량한계 설정에 관한 연구 <span style="color:#8D96AE">(2001)</span></li><li>크리깅 메타모델에 의한 철도차량 현수장치 최적설계 <span style="color:#8D96AE">(2001)</span></li><li>도시철도 차량의 동적거동을 고려한 차량한계 해석 <span style="color:#8D96AE">(2002)</span></li><li>철도차량의 성능 검증을 위한 시험 장치 <span style="color:#8D96AE">(2002)</span></li><li>크리깅 모델에 의한 철도차량 현수장치 최적설계 <span style="color:#8D96AE">(2003)</span></li><li>센서와 통신망을 이용한 신호계측장치 <span style="color:#8D96AE">(2003)</span></li><li>철도차량 이동용 시험계측장치 <span style="color:#8D96AE">(2003)</span></li><li>차량신호를 이용한 고장진단에 관한 연구 <span style="color:#8D96AE">(2004)</span></li><li>Wheel slip detection system for railway vehicles (국제출원, 국내 특허와 같은 계열) <span style="color:#8D96AE">(2004)</span></li><li>철도선로의 선로데이터 측정장치 <span style="color:#8D96AE">(2005)</span></li><li>철도차량용 자갈 날림판 <span style="color:#8D96AE">(2005)</span></li><li>한국형틸팅열차의 효과적인 동적 거동 측정 방안 도출 <span style="color:#8D96AE">(2006)</span></li><li>Apparatus for measuring railroad track parameters (국제출원, 국내 특허와 같은 계열) <span style="color:#8D96AE">(2006)</span></li><li>가속도 값을 이용한 궤도 불규칙도 검측 <span style="color:#8D96AE">(2008)</span></li><li>철도차량 현수장치의 식스시그마 강건 설계 <span style="color:#8D96AE">(2009)</span></li><li>평면원곡선과 종곡선 경합시 보정캔트의 효과에 대한 해석적 연구 <span style="color:#8D96AE">(2011)</span></li><li>공기유동터널 생성장치 <span style="color:#8D96AE">(2012)</span></li><li>실시간 전동차 방송 시스템 및 그 방법 <span style="color:#8D96AE">(2012)</span></li><li>불량률 최소화를 통한 강건 최적화의 확률제한조건 처리 <span style="color:#8D96AE">(2013)</span></li><li>철도차량 전면창유리 충격시험에 관한 연구 <span style="color:#8D96AE">(2013)</span></li><li>발사 장치 <span style="color:#8D96AE">(2013)</span></li><li>발사체 속도측정장치 <span style="color:#8D96AE">(2013)</span></li><li>열차분리결합 제어방법 <span style="color:#8D96AE">(2014)</span></li><li>태양광 모듈 <span style="color:#8D96AE">(2014)</span></li><li>선형인공신경망을 이용한 직류 전철변전소의 RC 회로정수 추정 <span style="color:#8D96AE">(2016)</span></li><li>철도분야 시험기술 분석에 관한 연구 <span style="color:#8D96AE">(2017)</span></li></ol></details></div>
     <div class="shelf" id="shelf" tabindex="0" aria-label="논문·특허 제목 목록"></div>
     <p class="note">한국철도기술연구원 소속으로 확인된 논문·특허 제목이에요(1997–2023).</p>
     <div class="chart" role="img" aria-label="연도별 논문·특허 수">
@@ -276,16 +320,20 @@ document.getElementById('board').addEventListener('click',depart);
   grip.addEventListener('pointerup',end);grip.addEventListener('pointercancel',end);
   grip.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();depart()}});
 })();
-// 출발 전광판
+// 처음 화면: 전광판 → 열차 문
 (function(){
-  const intro=document.getElementById('intro');const CH='가나다라마바사아자차카타파하0123456789';
-  document.querySelectorAll('.flap').forEach((el,ri)=>{
-    [...el.dataset.text].forEach((c,i)=>{const sp=document.createElement('span');
-      if(c===' '){sp.className='sp';el.appendChild(sp);return}
-      el.appendChild(sp);if(reduce){sp.textContent=c;return}
-      let n=0;const total=6+i+ri*3;const iv=setInterval(()=>{sp.textContent=n++<total?CH[Math.floor(Math.random()*CH.length)]:c;if(n>total)clearInterval(iv)},55)});
+  const intro=document.getElementById('intro'),doors=document.getElementById('doors'),clk=document.getElementById('clk');
+  const tickClock=()=>{const d=new Date();clk.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};tickClock();setInterval(tickClock,10000);
+  // 행선지 글자 촤르륵
+  const dest=document.getElementById('dest'),txt=dest.textContent,CH='가나다라마바사아자차카타파하';
+  if(!reduce){let n=0;const iv=setInterval(()=>{n++;dest.textContent=[...txt].map((c,i)=>c===' '||n>6+i*2?c:CH[Math.floor(Math.random()*CH.length)]).join('');if(n>6+txt.length*2)clearInterval(iv)},60)}
+  function chime(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;[[659,0],[523,.32]].forEach(([f,d])=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.2,t+d+.02);g.gain.exponentialRampToValueAtTime(.001,t+d+.9);o.connect(g);g.connect(ac.destination);o.start(t+d);o.stop(t+d+1)})}catch(e){}}
+  document.getElementById('enter').addEventListener('click',()=>{
+    if(reduce){intro.hidden=true;return}
+    chime();doors.classList.add('on');
+    setTimeout(()=>{intro.hidden=true;doors.classList.add('open')},700);
+    setTimeout(()=>{doors.classList.remove('on','open')},2000);
   });
-  document.getElementById('enter').addEventListener('click',()=>{horn();intro.classList.add('gone');setTimeout(()=>{intro.hidden=true},650)});
 })();
 document.getElementById('horn').addEventListener('click',()=>{horn();if(!reduce)burst()});
 </script>
