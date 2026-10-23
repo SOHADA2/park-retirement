@@ -115,16 +115,16 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 .led{position:relative;width:min(560px,100%);background:#07090C;border-radius:8px;padding:12px 12px 10px;
   box-shadow:0 0 0 3px #2A303C,0 0 0 9px #11151D,0 0 0 10px #39404E,0 30px 60px rgba(0,0,0,.7)}
 .led:after{content:"";position:absolute;inset:0;border-radius:8px;pointer-events:none;
-  background:radial-gradient(circle,transparent 45%,rgba(7,9,12,.85) 55%) 0 0/3px 3px}
+  background:radial-gradient(circle,transparent 62%,rgba(7,9,12,.42) 72%) 0 0/3px 3px}
 .led .top{display:flex;justify-content:space-between;align-items:center;color:#FF9E2C;font-weight:700;font-size:13px;letter-spacing:.08em;padding:2px 4px 8px;border-bottom:1px solid #1E232C}
 .led .top .clk{font-variant-numeric:tabular-nums;letter-spacing:.12em}
 .led .cols,.led .r{display:grid;grid-template-columns:58px 1fr 62px;gap:8px;align-items:center;padding:0 4px}
-.led .cols{font-size:10px;color:#6E7686;letter-spacing:.14em;padding-top:8px;padding-bottom:4px}
-.led .r{font-weight:700;font-size:14px;color:#FF9E2C;height:30px;border-bottom:1px dashed #171B22;font-variant-numeric:tabular-nums;white-space:nowrap}
+.led .cols{font-size:10px;color:#8C94A6;letter-spacing:.14em;padding-top:8px;padding-bottom:4px}
+.led .r{font-weight:700;font-size:15px;color:#FFAA3A;text-shadow:0 0 4px rgba(255,150,40,.35);height:30px;border-bottom:1px dashed #171B22;font-variant-numeric:tabular-nums;white-space:nowrap}
 .led .r>span{overflow:hidden;text-overflow:clip;min-width:0}
-.led .r .st{font-size:12px;text-align:right;color:#8A6A3E}
-.led .r.done{color:#9A6A2C}
-.led .r.now{color:#FFC34A;height:38px;font-size:16px;text-shadow:0 0 6px rgba(255,170,60,.55)}
+.led .r .st{font-size:12px;text-align:right;color:#B78346}
+.led .r.done{color:#D08A35}
+.led .r.now{color:#FFD15A;height:40px;font-size:17px;text-shadow:0 0 6px rgba(255,170,60,.55)}
 .led .r.now .st{color:#5BFF8A;text-shadow:0 0 6px rgba(80,255,130,.6);animation:ledblink 1s steps(2) infinite}
 @keyframes ledblink{50%{opacity:.25}}
 .led .tick{margin-top:8px;overflow:hidden;white-space:nowrap;color:#FFB347;font-weight:700;font-size:13px;border-top:1px solid #1E232C;padding-top:8px}
