@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>박찬경 박사님 퇴임 · 상영</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* 행사장 큰 화면용 상영 모드(site/show/). 1920×1080 무대를 화면 크기에 맞춰 통째로 늘이고 줄인다.
+   오래된 TV 브라우저도 돌도록 inset·gap·aspect-ratio·?. 같은 새 문법은 쓰지 않는다.
+   왼쪽: 기차 창밖으로 차창 사진이 흐름 · 오른쪽: 가족 메모가 한 장씩 · 아래: 메모 쓰기 QR. 새 메모는 1분마다 불러옴. */
+html,body{margin:0;height:100%;background:#E9ECEF;overflow:hidden}
+body{font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1B1F24;word-break:keep-all;-webkit-font-smoothing:antialiased}
+.mono{font-family:'IBM Plex Mono','D2Coding',monospace}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;margin:-540px 0 0 -960px;-webkit-transform-origin:50% 50%;transform-origin:50% 50%}
+.top{position:absolute;left:80px;right:80px;top:56px;height:100px;border-bottom:3px solid #1B1F24}
+.top h1{position:absolute;left:0;bottom:22px;margin:0;font-size:62px;font-weight:700;letter-spacing:-.01em}
+.top .r{position:absolute;right:0;bottom:30px;font-size:30px;color:#1C4E9C;font-weight:600;letter-spacing:.04em}
+/* 객실 창 */
+.cabin{position:absolute;left:80px;top:200px;width:760px;height:756px;overflow:hidden;border-radius:10px;background:#E2DED6}
+.car{position:absolute;left:-19px;top:-19px;width:798px;height:794px}
+.pane{position:absolute;left:8.2%;top:14.8%;width:84%;height:57.8%;overflow:hidden;background:#BFD0DF}
+.pane:after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;box-shadow:inset 0 20px 22px -14px rgba(0,0,0,.4),inset 0 -12px 16px -12px rgba(0,0,0,.3)}
+.strip{position:absolute;left:0;top:0;height:100%;white-space:nowrap;font-size:0}
+.strip figure{display:inline-block;vertical-align:top;margin:0 -44px 0 0;height:100%;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
+.strip img{display:block;height:100%;width:auto}
+.strip figcaption{display:none}
+.cabin-img{position:absolute;left:0;top:0;width:100%;height:100%;z-index:2}
+.wcap{position:absolute;left:80px;width:760px;top:982px;font-size:30px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcap span{font-family:'IBM Plex Mono',monospace;font-size:22px;color:#9AA1AB;font-weight:500;margin-right:16px}
+/* 메모 */
+.note{position:absolute;left:920px;top:200px;width:920px;height:640px;background:#fff;border-left:8px solid #1C4E9C;-webkit-box-sizing:border-box;box-sizing:border-box;padding:52px 64px 48px 60px;
+  opacity:0;-webkit-transition:opacity .9s;transition:opacity .9s}
+.note.on{opacity:1}
+.note .eb{font-size:22px;color:#5E6672;letter-spacing:.12em;font-family:'IBM Plex Mono',monospace}
+.note .msg{position:absolute;left:60px;right:64px;top:110px;bottom:130px;overflow:hidden;white-space:pre-wrap;line-height:1.6}
+.note .who{position:absolute;right:64px;bottom:48px;font-size:36px;font-weight:700}
+.note .who:before{content:"— ";color:#9AA1AB;font-weight:400}
+.note .when{position:absolute;left:60px;bottom:56px;font-size:22px;color:#9AA1AB;font-family:'IBM Plex Mono',monospace}
+.write{position:absolute;left:920px;top:876px;width:920px;height:150px}
+.write img{position:absolute;left:0;top:0;width:150px;height:150px}
+.write b{position:absolute;left:184px;top:14px;font-size:36px}
+.write p{position:absolute;left:184px;top:66px;margin:0;font-size:24px;color:#5E6672}
+.write .u{position:absolute;left:184px;top:108px;font-size:22px;color:#1C4E9C}
+/* 조작(마우스·리모컨을 쓰면 잠깐 보였다 사라짐) */
+.ctl{position:fixed;right:18px;top:14px;z-index:9;opacity:0;-webkit-transition:opacity .4s;transition:opacity .4s}
+.ctl.on{opacity:1}
+.ctl button{font:inherit;font-size:16px;margin-left:8px;padding:9px 16px;border:0;border-radius:4px;background:#1B1F24;color:#fff;cursor:pointer}
+body.idle{cursor:none}
+</style>
+</head><body>
+<div id="stage">
+  <div class="top"><h1>박찬경 박사님, 고생하셨어요</h1><div class="r mono">2026.10 · 인생 2막행</div></div>
+  <div class="cabin"><div class="car" id="car">
+    <div class="pane" id="pane"><div class="strip" id="strip">
+            <figure><img src="../p/01.jpg" alt="학사모를 쓴 젊은 시절 박사님" width="562" height="720"><figcaption hidden>학사모를 쓰던 날</figcaption></figure>
+            <figure><img src="../p/02.jpg" alt="웨딩 사진 속 두 분" width="901" height="720"><figcaption hidden>두 분이 함께 출발한 날</figcaption></figure>
+            <figure><img src="../p/03.jpg" alt="계곡 바위 앞에서 웃는 두 분" width="557" height="720"><figcaption hidden>계곡에서, 젊은 날의 두 분</figcaption></figure>
+            <figure><img src="../p/04.jpg" alt="쾰른 대성당이 보이는 강가에 선 박사님" width="635" height="720"><figcaption hidden>쾰른 대성당 앞 강가에서</figcaption></figure>
+            <figure><img src="../p/05.jpg" alt="밤의 대관람차 앞에 선 박사님" width="554" height="720"><figcaption hidden>파리, 대관람차가 빛나던 밤</figcaption></figure>
+            <figure><img src="../p/06.jpg" alt="겨울 파리에서 목도리를 두른 박사님" width="584" height="720"><figcaption hidden>목도리를 두른 겨울 파리</figcaption></figure>
+            <figure><img src="../p/07.jpg" alt="사진관에서 나란히 앉은 두 분" width="540" height="720"><figcaption hidden>사진관에서, 나란히</figcaption></figure>
+            <figure><img src="../p/08.jpg" alt="햇살 아래 목도리를 두른 박사님" width="490" height="720"><figcaption hidden>햇살 좋은 날</figcaption></figure>
+            <figure><img src="../p/09.jpg" alt="손을 흔들며 웃는 박사님" width="497" height="720"><figcaption hidden>반갑게 손 흔들며</figcaption></figure>
+            <figure><img src="../p/10.jpg" alt="환하게 웃는 박사님" width="464" height="493"><figcaption hidden>환하게 웃으며</figcaption></figure>
+            <figure><img src="../p/11.jpg" alt="케이크 앞에 앉은 두 분" width="1250" height="720"><figcaption hidden>케이크 앞에서 두 분</figcaption></figure>
+            <figure><img src="../p/12.jpg" alt="영상통화 화면 속 웃는 박사님" width="356" height="720"><figcaption hidden>영상통화 너머 웃음</figcaption></figure>
+            <figure><img src="../p/13.jpg" alt="모자를 쓰고 안마의자에 앉은 박사님" width="960" height="720"><figcaption hidden>안마의자에서 쉬는 중</figcaption></figure>
+            <figure><img src="../p/14.jpg" alt="거실 소파에서 쉬는 박사님과 브이를 한 어머님" width="923" height="720"><figcaption hidden>거실 소파에서, 함께</figcaption></figure>
+            <figure><img src="../p/15.jpg" alt="소파에 누워 브이를 한 박사님" width="1086" height="720"><figcaption hidden>소파에 누워 브이</figcaption></figure>
+            <figure><img src="../p/16.jpg" alt="푸른 들판에서 어깨동무하고 웃는 두 분" width="1262" height="720"><figcaption hidden>들판에서 함께 웃으며 · 다음 역, 인생 2막</figcaption></figure>
+    </div></div>
+    <img class="cabin-img" src="../cabin.webp" alt="">
+  </div></div>
+  <div class="wcap" id="wcap"><span id="wno">01</span><b id="wtx">학사모를 쓰던 날</b></div>
+  <div class="note" id="note"><div class="eb" id="neb">가족이 남긴 메모</div><div class="msg" id="nmsg"></div><div class="when" id="nwhen"></div><div class="who" id="nwho"></div></div>
+  <div class="write"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNSAzNSIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj48cmVjdCB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMSAxaDF2MWgtMXpNMiAxaDF2MWgtMXpNMyAxaDF2MWgtMXpNNCAxaDF2MWgtMXpNNSAxaDF2MWgtMXpNNiAxaDF2MWgtMXpNNyAxaDF2MWgtMXpNMTAgMWgxdjFoLTF6TTEyIDFoMXYxaC0xek0xMyAxaDF2MWgtMXpNMTQgMWgxdjFoLTF6TTE3IDFoMXYxaC0xek0xOCAxaDF2MWgtMXpNMTkgMWgxdjFoLTF6TTIwIDFoMXYxaC0xek0yMSAxaDF2MWgtMXpNMjQgMWgxdjFoLTF6TTI3IDFoMXYxaC0xek0yOCAxaDF2MWgtMXpNMjkgMWgxdjFoLTF6TTMwIDFoMXYxaC0xek0zMSAxaDF2MWgtMXpNMzIgMWgxdjFoLTF6TTMzIDFoMXYxaC0xek0xIDJoMXYxaC0xek03IDJoMXYxaC0xek0xMCAyaDF2MWgtMXpNMTIgMmgxdjFoLTF6TTEzIDJoMXYxaC0xek0xNCAyaDF2MWgtMXpNMTUgMmgxdjFoLTF6TTE2IDJoMXYxaC0xek0yMSAyaDF2MWgtMXpNMjIgMmgxdjFoLTF6TTI1IDJoMXYxaC0xek0yNyAyaDF2MWgtMXpNMzMgMmgxdjFoLTF6TTEgM2gxdjFoLTF6TTMgM2gxdjFoLTF6TTQgM2gxdjFoLTF6TTUgM2gxdjFoLTF6TTcgM2gxdjFoLTF6TTkgM2gxdjFoLTF6TTEwIDNoMXYxaC0xek0xMSAzaDF2MWgtMXpNMTMgM2gxdjFoLTF6TTE0IDNoMXYxaC0xek0yMSAzaDF2MWgtMXpNMjIgM2gxdjFoLTF6TTIzIDNoMXYxaC0xek0yNyAzaDF2MWgtMXpNMjkgM2gxdjFoLTF6TTMwIDNoMXYxaC0xek0zMSAzaDF2MWgtMXpNMzMgM2gxdjFoLTF6TTEgNGgxdjFoLTF6TTMgNGgxdjFoLTF6TTQgNGgxdjFoLTF6TTUgNGgxdjFoLTF6TTcgNGgxdjFoLTF6TTkgNGgxdjFoLTF6TTEwIDRoMXYxaC0xek0xMiA0aDF2MWgtMXpNMTUgNGgxdjFoLTF6TTE2IDRoMXYxaC0xek0xNyA0aDF2MWgtMXpNMTggNGgxdjFoLTF6TTE5IDRoMXYxaC0xek0yMyA0aDF2MWgtMXpNMjUgNGgxdjFoLTF6TTI3IDRoMXYxaC0xek0yOSA0aDF2MWgtMXpNMzAgNGgxdjFoLTF6TTMxIDRoMXYxaC0xek0zMyA0aDF2MWgtMXpNMSA1aDF2MWgtMXpNMyA1aDF2MWgtMXpNNCA1aDF2MWgtMXpNNSA1aDF2MWgtMXpNNyA1aDF2MWgtMXpNOSA1aDF2MWgtMXpNMTAgNWgxdjFoLTF6TTEyIDVoMXYxaC0xek0xMyA1aDF2MWgtMXpNMTQgNWgxdjFoLTF6TTE2IDVoMXYxaC0xek0yMCA1aDF2MWgtMXpNMjEgNWgxdjFoLTF6TTIyIDVoMXYxaC0xek0yMyA1aDF2MWgtMXpNMjQgNWgxdjFoLTF6TTI3IDVoMXYxaC0xek0yOSA1aDF2MWgtMXpNMzAgNWgxdjFoLTF6TTMxIDVoMXYxaC0xek0zMyA1aDF2MWgtMXpNMSA2aDF2MWgtMXpNNyA2aDF2MWgtMXpNOSA2aDF2MWgtMXpNMTMgNmgxdjFoLTF6TTE0IDZoMXYxaC0xek0xNiA2aDF2MWgtMXpNMTcgNmgxdjFoLTF6TTE4IDZoMXYxaC0xek0xOSA2aDF2MWgtMXpNMjEgNmgxdjFoLTF6TTIyIDZoMXYxaC0xek0yNSA2aDF2MWgtMXpNMjcgNmgxdjFoLTF6TTMzIDZoMXYxaC0xek0xIDdoMXYxaC0xek0yIDdoMXYxaC0xek0zIDdoMXYxaC0xek00IDdoMXYxaC0xek01IDdoMXYxaC0xek02IDdoMXYxaC0xek03IDdoMXYxaC0xek05IDdoMXYxaC0xek0xMSA3aDF2MWgtMXpNMTMgN2gxdjFoLTF6TTE1IDdoMXYxaC0xek0xNyA3aDF2MWgtMXpNMTkgN2gxdjFoLTF6TTIxIDdoMXYxaC0xek0yMyA3aDF2MWgtMXpNMjUgN2gxdjFoLTF6TTI3IDdoMXYxaC0xek0yOCA3aDF2MWgtMXpNMjkgN2gxdjFoLTF6TTMwIDdoMXYxaC0xek0zMSA3aDF2MWgtMXpNMzIgN2gxdjFoLTF6TTMzIDdoMXYxaC0xek05IDhoMXYxaC0xek0xMSA4aDF2MWgtMXpNMTMgOGgxdjFoLTF6TTE1IDhoMXYxaC0xek0xNiA4aDF2MWgtMXpNMTkgOGgxdjFoLTF6TTIwIDhoMXYxaC0xek0yMSA4aDF2MWgtMXpNMjIgOGgxdjFoLTF6TTIzIDhoMXYxaC0xek0yNCA4aDF2MWgtMXpNMjUgOGgxdjFoLTF6TTEgOWgxdjFoLTF6TTMgOWgxdjFoLTF6TTQgOWgxdjFoLTF6TTUgOWgxdjFoLTF6TTYgOWgxdjFoLTF6TTcgOWgxdjFoLTF6TTEyIDloMXYxaC0xek0xMyA5aDF2MWgtMXpNMTQgOWgxdjFoLTF6TTE2IDloMXYxaC0xek0xNyA5aDF2MWgtMXpNMTggOWgxdjFoLTF6TTE5IDloMXYxaC0xek0yMCA5aDF2MWgtMXpNMjEgOWgxdjFoLTF6TTI1IDloMXYxaC0xek0yNyA5aDF2MWgtMXpNMjggOWgxdjFoLTF6TTI5IDloMXYxaC0xek0zMCA5aDF2MWgtMXpNMzEgOWgxdjFoLTF6TTEgMTBoMXYxaC0xek00IDEwaDF2MWgtMXpNNSAxMGgxdjFoLTF6TTggMTBoMXYxaC0xek0xMCAxMGgxdjFoLTF6TTExIDEwaDF2MWgtMXpNMTcgMTBoMXYxaC0xek0xOCAxMGgxdjFoLTF6TTE5IDEwaDF2MWgtMXpNMjAgMTBoMXYxaC0xek0yMSAxMGgxdjFoLTF6TTIyIDEwaDF2MWgtMXpNMjMgMTBoMXYxaC0xek0yNCAxMGgxdjFoLTF6TTI3IDEwaDF2MWgtMXpNMjggMTBoMXYxaC0xek0zMCAxMGgxdjFoLTF6TTMxIDEwaDF2MWgtMXpNMzIgMTBoMXYxaC0xek0zMyAxMGgxdjFoLTF6TTEgMTFoMXYxaC0xek0yIDExaDF2MWgtMXpNNiAxMWgxdjFoLTF6TTcgMTFoMXYxaC0xek0xMiAxMWgxdjFoLTF6TTEzIDExaDF2MWgtMXpNMTYgMTFoMXYxaC0xek0xNyAxMWgxdjFoLTF6TTIyIDExaDF2MWgtMXpNMjMgMTFoMXYxaC0xek0yNiAxMWgxdjFoLTF6TTI5IDExaDF2MWgtMXpNMzEgMTFoMXYxaC0xek0zMiAxMWgxdjFoLTF6TTUgMTJoMXYxaC0xek02IDEyaDF2MWgtMXpNOCAxMmgxdjFoLTF6TTkgMTJoMXYxaC0xek0xMCAxMmgxdjFoLTF6TTExIDEyaDF2MWgtMXpNMTMgMTJoMXYxaC0xek0xNSAxMmgxdjFoLTF6TTE2IDEyaDF2MWgtMXpNMjIgMTJoMXYxaC0xek0yNSAxMmgxdjFoLTF6TTI2IDEyaDF2MWgtMXpNMjkgMTJoMXYxaC0xek0zMCAxMmgxdjFoLTF6TTMxIDEyaDF2MWgtMXpNMzIgMTJoMXYxaC0xek00IDEzaDF2MWgtMXpNNyAxM2gxdjFoLTF6TTggMTNoMXYxaC0xek0xMCAxM2gxdjFoLTF6TTExIDEzaDF2MWgtMXpNMTMgMTNoMXYxaC0xek0xNiAxM2gxdjFoLTF6TTE4IDEzaDF2MWgtMXpNMjAgMTNoMXYxaC0xek0yMyAxM2gxdjFoLTF6TTI2IDEzaDF2MWgtMXpNMjggMTNoMXYxaC0xek0yOSAxM2gxdjFoLTF6TTMwIDEzaDF2MWgtMXpNMzIgMTNoMXYxaC0xek0xIDE0aDF2MWgtMXpNMiAxNGgxdjFoLTF6TTUgMTRoMXYxaC0xek0xMiAxNGgxdjFoLTF6TTE1IDE0aDF2MWgtMXpNMTYgMTRoMXYxaC0xek0xNyAxNGgxdjFoLTF6TTE4IDE0aDF2MWgtMXpNMjAgMTRoMXYxaC0xek0yMSAxNGgxdjFoLTF6TTIyIDE0aDF2MWgtMXpNMjQgMTRoMXYxaC0xek0yNyAxNGgxdjFoLTF6TTMwIDE0aDF2MWgtMXpNMzEgMTRoMXYxaC0xek0zMiAxNGgxdjFoLTF6TTMzIDE0aDF2MWgtMXpNNSAxNWgxdjFoLTF6TTYgMTVoMXYxaC0xek03IDE1aDF2MWgtMXpNMTEgMTVoMXYxaC0xek0xMyAxNWgxdjFoLTF6TTE0IDE1aDF2MWgtMXpNMTggMTVoMXYxaC0xek0yNiAxNWgxdjFoLTF6TTI3IDE1aDF2MWgtMXpNMzEgMTVoMXYxaC0xek0zMiAxNWgxdjFoLTF6TTEgMTZoMXYxaC0xek0yIDE2aDF2MWgtMXpNNSAxNmgxdjFoLTF6TTEyIDE2aDF2MWgtMXpNMTUgMTZoMXYxaC0xek0xNyAxNmgxdjFoLTF6TTE5IDE2aDF2MWgtMXpNMjAgMTZoMXYxaC0xek0yMiAxNmgxdjFoLTF6TTI0IDE2aDF2MWgtMXpNMjYgMTZoMXYxaC0xek0yNyAxNmgxdjFoLTF6TTI5IDE2aDF2MWgtMXpNMzAgMTZoMXYxaC0xek0zMSAxNmgxdjFoLTF6TTEgMTdoMXYxaC0xek0zIDE3aDF2MWgtMXpNNSAxN2gxdjFoLTF6TTYgMTdoMXYxaC0xek03IDE3aDF2MWgtMXpNMTAgMTdoMXYxaC0xek0xNCAxN2gxdjFoLTF6TTE4IDE3aDF2MWgtMXpNMjUgMTdoMXYxaC0xek0yNiAxN2gxdjFoLTF6TTI4IDE3aDF2MWgtMXpNMjkgMTdoMXYxaC0xek0zMyAxN2gxdjFoLTF6TTIgMThoMXYxaC0xek0zIDE4aDF2MWgtMXpNOCAxOGgxdjFoLTF6TTkgMThoMXYxaC0xek0xMiAxOGgxdjFoLTF6TTE3IDE4aDF2MWgtMXpNMTkgMThoMXYxaC0xek0yMCAxOGgxdjFoLTF6TTIxIDE4aDF2MWgtMXpNMjIgMThoMXYxaC0xek0yNCAxOGgxdjFoLTF6TTI2IDE4aDF2MWgtMXpNMjcgMThoMXYxaC0xek0yOCAxOGgxdjFoLTF6TTMwIDE4aDF2MWgtMXpNMzEgMThoMXYxaC0xek0zMyAxOGgxdjFoLTF6TTEgMTloMXYxaC0xek0yIDE5aDF2MWgtMXpNMyAxOWgxdjFoLTF6TTQgMTloMXYxaC0xek01IDE5aDF2MWgtMXpNNyAxOWgxdjFoLTF6TTkgMTloMXYxaC0xek0xMSAxOWgxdjFoLTF6TTEyIDE5aDF2MWgtMXpNMTQgMTloMXYxaC0xek0xNiAxOWgxdjFoLTF6TTE4IDE5aDF2MWgtMXpNMTkgMTloMXYxaC0xek0yMiAxOWgxdjFoLTF6TTIzIDE5aDF2MWgtMXpNMjUgMTloMXYxaC0xek0yNiAxOWgxdjFoLTF6TTI3IDE5aDF2MWgtMXpNMjggMTloMXYxaC0xek0yOSAxOWgxdjFoLTF6TTMxIDE5aDF2MWgtMXpNMzIgMTloMXYxaC0xek0xIDIwaDF2MWgtMXpNMiAyMGgxdjFoLTF6TTQgMjBoMXYxaC0xek01IDIwaDF2MWgtMXpNNiAyMGgxdjFoLTF6TTggMjBoMXYxaC0xek0xMCAyMGgxdjFoLTF6TTExIDIwaDF2MWgtMXpNMTUgMjBoMXYxaC0xek0xNiAyMGgxdjFoLTF6TTIxIDIwaDF2MWgtMXpNMjIgMjBoMXYxaC0xek0yMyAyMGgxdjFoLTF6TTI1IDIwaDF2MWgtMXpNMjcgMjBoMXYxaC0xek0yOCAyMGgxdjFoLTF6TTI5IDIwaDF2MWgtMXpNMzAgMjBoMXYxaC0xek0zMSAyMGgxdjFoLTF6TTMzIDIwaDF2MWgtMXpNMSAyMWgxdjFoLTF6TTIgMjFoMXYxaC0xek0zIDIxaDF2MWgtMXpNNCAyMWgxdjFoLTF6TTUgMjFoMXYxaC0xek02IDIxaDF2MWgtMXpNNyAyMWgxdjFoLTF6TTggMjFoMXYxaC0xek0xMiAyMWgxdjFoLTF6TTEzIDIxaDF2MWgtMXpNMTYgMjFoMXYxaC0xek0xOCAyMWgxdjFoLTF6TTIxIDIxaDF2MWgtMXpNMjQgMjFoMXYxaC0xek0yNiAyMWgxdjFoLTF6TTI4IDIxaDF2MWgtMXpNMjkgMjFoMXYxaC0xek0zMCAyMWgxdjFoLTF6TTEgMjJoMXYxaC0xek00IDIyaDF2MWgtMXpNNiAyMmgxdjFoLTF6TTkgMjJoMXYxaC0xek0xMSAyMmgxdjFoLTF6TTEyIDIyaDF2MWgtMXpNMTQgMjJoMXYxaC0xek0xNSAyMmgxdjFoLTF6TTE2IDIyaDF2MWgtMXpNMTggMjJoMXYxaC0xek0xOSAyMmgxdjFoLTF6TTIwIDIyaDF2MWgtMXpNMjEgMjJoMXYxaC0xek0yNCAyMmgxdjFoLTF6TTI2IDIyaDF2MWgtMXpNMjcgMjJoMXYxaC0xek0zMyAyMmgxdjFoLTF6TTEgMjNoMXYxaC0xek02IDIzaDF2MWgtMXpNNyAyM2gxdjFoLTF6TTggMjNoMXYxaC0xek0xMCAyM2gxdjFoLTF6TTEyIDIzaDF2MWgtMXpNMTQgMjNoMXYxaC0xek0xNSAyM2gxdjFoLTF6TTE2IDIzaDF2MWgtMXpNMTcgMjNoMXYxaC0xek0xOSAyM2gxdjFoLTF6TTIzIDIzaDF2MWgtMXpNMzAgMjNoMXYxaC0xek0zMSAyM2gxdjFoLTF6TTMyIDIzaDF2MWgtMXpNMSAyNGgxdjFoLTF6TTUgMjRoMXYxaC0xek02IDI0aDF2MWgtMXpNMTMgMjRoMXYxaC0xek0xNCAyNGgxdjFoLTF6TTE1IDI0aDF2MWgtMXpNMTcgMjRoMXYxaC0xek0yMCAyNGgxdjFoLTF6TTIxIDI0aDF2MWgtMXpNMjIgMjRoMXYxaC0xek0yNCAyNGgxdjFoLTF6TTI2IDI0aDF2MWgtMXpNMjcgMjRoMXYxaC0xek0zMCAyNGgxdjFoLTF6TTMxIDI0aDF2MWgtMXpNMzMgMjRoMXYxaC0xek0xIDI1aDF2MWgtMXpNMyAyNWgxdjFoLTF6TTcgMjVoMXYxaC0xek0xMCAyNWgxdjFoLTF6TTEyIDI1aDF2MWgtMXpNMTMgMjVoMXYxaC0xek0xNiAyNWgxdjFoLTF6TTE3IDI1aDF2MWgtMXpNMTggMjVoMXYxaC0xek0yMSAyNWgxdjFoLTF6TTIzIDI1aDF2MWgtMXpNMjQgMjVoMXYxaC0xek0yNSAyNWgxdjFoLTF6TTI2IDI1aDF2MWgtMXpNMjcgMjVoMXYxaC0xek0yOCAyNWgxdjFoLTF6TTI5IDI1aDF2MWgtMXpNMzAgMjVoMXYxaC0xek0zMyAyNWgxdjFoLTF6TTkgMjZoMXYxaC0xek0xNCAyNmgxdjFoLTF6TTE3IDI2aDF2MWgtMXpNMTggMjZoMXYxaC0xek0xOSAyNmgxdjFoLTF6TTIwIDI2aDF2MWgtMXpNMjEgMjZoMXYxaC0xek0yNSAyNmgxdjFoLTF6TTI5IDI2aDF2MWgtMXpNMzEgMjZoMXYxaC0xek0zMiAyNmgxdjFoLTF6TTMzIDI2aDF2MWgtMXpNMSAyN2gxdjFoLTF6TTIgMjdoMXYxaC0xek0zIDI3aDF2MWgtMXpNNCAyN2gxdjFoLTF6TTUgMjdoMXYxaC0xek02IDI3aDF2MWgtMXpNNyAyN2gxdjFoLTF6TTE0IDI3aDF2MWgtMXpNMTUgMjdoMXYxaC0xek0xNiAyN2gxdjFoLTF6TTE3IDI3aDF2MWgtMXpNMTkgMjdoMXYxaC0xek0yMSAyN2gxdjFoLTF6TTIzIDI3aDF2MWgtMXpNMjQgMjdoMXYxaC0xek0yNSAyN2gxdjFoLTF6TTI3IDI3aDF2MWgtMXpNMjkgMjdoMXYxaC0xek0zMSAyN2gxdjFoLTF6TTMyIDI3aDF2MWgtMXpNMSAyOGgxdjFoLTF6TTcgMjhoMXYxaC0xek05IDI4aDF2MWgtMXpNMTEgMjhoMXYxaC0xek0xNCAyOGgxdjFoLTF6TTE3IDI4aDF2MWgtMXpNMTkgMjhoMXYxaC0xek0yMiAyOGgxdjFoLTF6TTIzIDI4aDF2MWgtMXpNMjQgMjhoMXYxaC0xek0yNSAyOGgxdjFoLTF6TTI5IDI4aDF2MWgtMXpNMzAgMjhoMXYxaC0xek0zMSAyOGgxdjFoLTF6TTMyIDI4aDF2MWgtMXpNMSAyOWgxdjFoLTF6TTMgMjloMXYxaC0xek00IDI5aDF2MWgtMXpNNSAyOWgxdjFoLTF6TTcgMjloMXYxaC0xek05IDI5aDF2MWgtMXpNMTAgMjloMXYxaC0xek0xNSAyOWgxdjFoLTF6TTE3IDI5aDF2MWgtMXpNMTggMjloMXYxaC0xek0yMCAyOWgxdjFoLTF6TTI1IDI5aDF2MWgtMXpNMjYgMjloMXYxaC0xek0yNyAyOWgxdjFoLTF6TTI4IDI5aDF2MWgtMXpNMjkgMjloMXYxaC0xek0zMCAyOWgxdjFoLTF6TTMyIDI5aDF2MWgtMXpNMzMgMjloMXYxaC0xek0xIDMwaDF2MWgtMXpNMyAzMGgxdjFoLTF6TTQgMzBoMXYxaC0xek01IDMwaDF2MWgtMXpNNyAzMGgxdjFoLTF6TTkgMzBoMXYxaC0xek0xMCAzMGgxdjFoLTF6TTExIDMwaDF2MWgtMXpNMTIgMzBoMXYxaC0xek0xNSAzMGgxdjFoLTF6TTE3IDMwaDF2MWgtMXpNMTggMzBoMXYxaC0xek0xOSAzMGgxdjFoLTF6TTIwIDMwaDF2MWgtMXpNMjEgMzBoMXYxaC0xek0yMiAzMGgxdjFoLTF6TTIzIDMwaDF2MWgtMXpNMjQgMzBoMXYxaC0xek0yNiAzMGgxdjFoLTF6TTI5IDMwaDF2MWgtMXpNMzEgMzBoMXYxaC0xek0zMiAzMGgxdjFoLTF6TTMzIDMwaDF2MWgtMXpNMSAzMWgxdjFoLTF6TTMgMzFoMXYxaC0xek00IDMxaDF2MWgtMXpNNSAzMWgxdjFoLTF6TTcgMzFoMXYxaC0xek05IDMxaDF2MWgtMXpNMTAgMzFoMXYxaC0xek0xMSAzMWgxdjFoLTF6TTEyIDMxaDF2MWgtMXpNMTUgMzFoMXYxaC0xek0xNiAzMWgxdjFoLTF6TTE3IDMxaDF2MWgtMXpNMTggMzFoMXYxaC0xek0yMSAzMWgxdjFoLTF6TTIzIDMxaDF2MWgtMXpNMjQgMzFoMXYxaC0xek0yNyAzMWgxdjFoLTF6TTI4IDMxaDF2MWgtMXpNMSAzMmgxdjFoLTF6TTcgMzJoMXYxaC0xek0xMiAzMmgxdjFoLTF6TTEzIDMyaDF2MWgtMXpNMTQgMzJoMXYxaC0xek0xNyAzMmgxdjFoLTF6TTIwIDMyaDF2MWgtMXpNMjEgMzJoMXYxaC0xek0yMiAzMmgxdjFoLTF6TTIzIDMyaDF2MWgtMXpNMjYgMzJoMXYxaC0xek0yOSAzMmgxdjFoLTF6TTMwIDMyaDF2MWgtMXpNMzEgMzJoMXYxaC0xek0xIDMzaDF2MWgtMXpNMiAzM2gxdjFoLTF6TTMgMzNoMXYxaC0xek00IDMzaDF2MWgtMXpNNSAzM2gxdjFoLTF6TTYgMzNoMXYxaC0xek03IDMzaDF2MWgtMXpNOSAzM2gxdjFoLTF6TTEwIDMzaDF2MWgtMXpNMTEgMzNoMXYxaC0xek0xOCAzM2gxdjFoLTF6TTE5IDMzaDF2MWgtMXpNMjAgMzNoMXYxaC0xek0yMyAzM2gxdjFoLTF6TTI1IDMzaDF2MWgtMXpNMjggMzNoMXYxaC0xek0zMiAzM2gxdjFoLTF6IiBmaWxsPSIjMUIxRjI0Ii8+PC9zdmc+" alt="메모 쓰기 QR"><b>메모를 남겨 주세요</b><p>휴대폰 카메라로 비추면 바로 쓸 수 있어요 · 남긴 메모는 곧 이 화면에</p><div class="u mono">sohada2.github.io/park-retirement/write</div></div>
+</div>
+<div class="ctl" id="ctl"><button id="bgm">음악 켜기</button><button id="fs">전체 화면</button></div>
+<script>
+(function(){
+  // 무대 맞추기
+  var stage=document.getElementById('stage');
+  function fit(){var k=Math.min(window.innerWidth/1920,window.innerHeight/1080);stage.style.webkitTransform=stage.style.transform='scale('+k+')'}
+  window.addEventListener('resize',fit);fit();
+
+  // 기차 창: 사진 띠가 흐르고, 객실째 살짝 흔들림
+  var st=document.getElementById('strip'),pane=document.getElementById('pane'),car=document.getElementById('car'),wno=document.getElementById('wno'),wtx=document.getElementById('wtx');
+  var fs=[].slice.call(st.querySelectorAll('figure')),N=fs.length,caps=fs.map(function(f){return f.querySelector('figcaption').textContent});
+  fs.forEach(function(f){st.appendChild(f.cloneNode(true))});
+  var x=0,loop=1,mid=[],last=0,cur=-1,nextJ=1500,jt=-1e9,jA=0,SPEED=34;
+  function measure(){mid=fs.map(function(f){return f.offsetLeft+f.offsetWidth/2});loop=(st.children[N].offsetLeft-fs[0].offsetLeft)||1}
+  function mod(a,m){return((a%m)+m)%m}
+  function frame(t){var dt=Math.min(.05,(t-(last||t))/1000);last=t;x=mod(x+SPEED*dt,loop);
+    if(t>nextJ){jt=t;jA=1.6+Math.random()*1.4;nextJ=t+1400+Math.random()*1200}
+    var e=(t-jt)/1000,jolt=e<.6?jA*Math.exp(-e*9)*Math.sin(e*42):0,cx=Math.sin(t/1700)*1.2,cy=Math.sin(t/640)*.9+jolt,cr=Math.sin(t/2300)*.12;
+    car.style.webkitTransform=car.style.transform='translate('+cx+'px,'+cy+'px) rotate('+cr+'deg)';
+    st.style.webkitTransform=st.style.transform='translate('+(-x-cx*.6)+'px,'+(-cy*.8)+'px)';
+    var c=x+pane.offsetWidth/2,k=0,dd=1e9;for(var i=0;i<N;i++){var d=Math.abs(mod(c-mid[i]+loop/2,loop)-loop/2);if(d<dd){dd=d;k=i}}
+    if(k!==cur){cur=k;wno.textContent=(k<9?'0':'')+(k+1);wtx.textContent=caps[k]}
+    requestAnimationFrame(frame)}
+  measure();[].forEach.call(st.querySelectorAll('img'),function(i){i.addEventListener('load',measure)});requestAnimationFrame(frame);
+
+  // 메모: 한 장씩, 길이에 맞춰 머무는 시간·글자 크기. 1분마다 새 메모 확인(새 메모는 바로 다음에)
+  var API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04',note=document.getElementById('note'),neb=document.getElementById('neb'),nmsg=document.getElementById('nmsg'),nwho=document.getElementById('nwho'),nwhen=document.getElementById('nwhen');
+  var rows=[],seen={},queue=[],idx=-1,timer=null;
+  function load(){if(!API||API.indexOf('http')!==0)return;var xh=new XMLHttpRequest();xh.open('GET',API+'&pageSize=300&orderBy=t');
+    xh.onload=function(){try{var d=JSON.parse(xh.responseText),docs=(d&&d.documents)||[],first=!rows.length;
+      docs.forEach(function(o){if(seen[o.name])return;seen[o.name]=1;var r={name:o.fields.name.stringValue,msg:o.fields.msg.stringValue,t:o.fields.t.timestampValue};rows.push(r);if(!first)queue.push(rows.length-1)});
+      if(first&&rows.length&&idx<0)next()}catch(e){}};xh.send()}
+  function size(n){return n<60?56:n<140?48:n<260?40:n<420?34:29}
+  function show(i){var r=rows[i];note.className='note';setTimeout(function(){
+      nmsg.style.fontSize=size(r.msg.length)+'px';nmsg.textContent=r.msg;nwho.textContent=r.name;
+      var t=new Date(r.t);nwhen.textContent=isNaN(t)?'':(t.getMonth()+1)+'.'+t.getDate();
+      neb.textContent='가족이 남긴 메모 · '+(i+1)+' / '+rows.length;
+      for(var s=size(r.msg.length);nmsg.scrollHeight>nmsg.clientHeight+2&&s>22;s-=2)nmsg.style.fontSize=s+'px';   // 넘치면 조금씩 줄임
+      note.className='note on'},900);
+    clearTimeout(timer);timer=setTimeout(next,Math.max(9000,Math.min(24000,7000+r.msg.length*70))+900)}
+  function next(){if(!rows.length){empty();timer=setTimeout(next,10000);return}idx=queue.length?queue.shift():(idx+1)%rows.length;show(idx)}
+  function prev(){if(!rows.length)return;idx=(idx-1+rows.length)%rows.length;show(idx)}
+  function empty(){nmsg.style.fontSize='44px';nmsg.textContent='아직 도착한 메모가 없어요.\n아래 QR로 첫 메모를 남겨 주세요';nwho.textContent='';nwhen.textContent='';note.className='note on'}
+  load();setInterval(load,60000);setTimeout(function(){if(!rows.length&&idx<0)next()},4000);
+
+  // 조작: 음악·전체 화면, 리모컨 ←→ 메모 넘기기, 확인 = 음악
+  var ctl=document.getElementById('ctl'),bt=document.getElementById('bgm'),fb=document.getElementById('fs'),au=null,idleT=null;
+  function wake(){ctl.className='ctl on';document.body.className='';clearTimeout(idleT);idleT=setTimeout(function(){ctl.className='ctl';document.body.className='idle'},4000)}
+  function music(){if(!au){au=new Audio('../bgm.mp3');au.loop=true;au.volume=.5}if(au.paused){au.play();bt.textContent='음악 끄기'}else{au.pause();bt.textContent='음악 켜기'}}
+  bt.onclick=music;
+  fb.onclick=function(){var d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(f)f.call(d)};
+  document.addEventListener('mousemove',wake);document.addEventListener('keydown',function(e){wake();var k=e.key||e.keyCode;
+    if(k==='ArrowRight'||k===39)next();else if(k==='ArrowLeft'||k===37)prev();else if(k==='Enter'||k===13)music()});
+  wake();
+})();
+</script>
+</body></html>
