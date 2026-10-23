@@ -33,6 +33,7 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .ann{width:min(400px,100%);font-size:16px;line-height:1.75;color:#C9CED6;min-height:9.5em}
 .ann p{margin:0;opacity:0;transform:translateY(6px);transition:opacity .6s,transform .6s}
 .ann p.on{opacity:1;transform:none}
+.ann p.typing .c{opacity:0;transition:opacity .12s}.ann p.typing .c.v{opacity:1}
 .ann p b{color:#fff;font-weight:600}
 .ann .chime{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:#7E8794;margin-bottom:10px}
 .sign{width:min(400px,100%);background:#fff;color:var(--ink);border-radius:6px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.4)}
@@ -138,7 +139,7 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
   <div class="ann" id="ann" aria-live="polite">
     <div class="chime">♪ 안내 방송</div>
     <p>이번 역은 이 열차의 종착역,<br><b>한국철도기술연구원역</b>입니다.</p>
-    <p>1994년부터 이 열차를 이용해 주신<br><b>박찬경 박사님</b>, 그동안 정말 고생 많으셨습니다.</p>
+    <p>이 열차를 이용해 주신<br><b>박찬경 박사님</b>, 그동안 정말 고생 많으셨습니다.</p>
     <p>인생 2막 방면으로 가실 분은<br>이번 역에서 갈아타시기 바랍니다.</p>
   </div>
   <div class="sign" aria-hidden="true">
@@ -259,16 +260,32 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   b.addEventListener('click',()=>on?stop():start());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)au.pause();else if(on)au.play().catch(()=>{})});
   return {start}})();
-// 첫 화면: 종착역 도착 — 누르면 「딩동댕」+ 안내방송(ann.mp3), 방송에 맞춰 문구가 한 줄씩
+// 첫 화면: 종착역 도착 — 누르면 「딩동댕」+ 안내방송(ann.mp3), 방송 말에 맞춰 문구가 한 글자씩
 (function(){const a=document.getElementById('arrive'),ps=[...document.querySelectorAll('#ann p')],off=document.getElementById('off'),ls=document.getElementById('listen'),sk=document.getElementById('skip'),ch=document.querySelector('#ann .chime');
-  const AT=[2.9,10.0,18.6],END=23.4;let au=null,ended=false;
+  // 줄마다 말하는 구간 [글자, 시작초, 끝초] — ann.mp3 소리에서 잰 값
+  const SEG=[[['이번 역은 이 열차의 종착역,',2.94,5.82],['한국철도기술연구원역입니다.',6.36,8.69]],
+    [['이 열차를 이용해 주신박찬경 박사님, ',9.99,12.34],['그동안 정말 고생 많으셨습니다.',13.18,15.26]],
+    [['인생 2막 방면으로 가실 분은',16.23,18.23],['이번 역에서 갈아타시기 바랍니다.',18.84,20.82]]],END=21.0;
+  let au=null,ended=false;
+  // 글자마다 <span class="c"> 로 감싸 둔다(<b> 굵은 글씨는 그대로)
+  const cs=ps.map(p=>{const out=[];(function wrap(n){[...n.childNodes].forEach(k=>{if(k.nodeType===3){const f=document.createDocumentFragment();
+    [...k.textContent].forEach(t=>{const c=document.createElement('span');c.className='c';c.textContent=t;f.appendChild(c);out.push(c)});k.replaceWith(f)}else wrap(k)})})(p);return out});
+  // 시각 t 에 보여야 할 글자 수
+  const shown=(i,t)=>{let n=0;for(const [w,a,b] of SEG[i]){const L=[...w].length;if(t>=b)n+=L;else{if(t>a)n+=Math.ceil(L*(t-a)/(b-a));break}}return n};
+  const draw=t=>ps.forEach((p,i)=>{if(t>=SEG[i][0][1])p.classList.add('on');const n=shown(i,t);cs[i].forEach((c,j)=>c.classList.toggle('v',j<n))});
   const showOff=()=>{if(ended)return;ended=true;off.hidden=false;requestAnimationFrame(()=>off.classList.add('on'));off.focus()};
   function play(withSound){ls.hidden=true;sk.hidden=true;
+    if(reduce){ps.forEach(p=>p.classList.add('on'))}else ps.forEach(p=>p.classList.add('typing'));
     if(withSound){au=new Audio('ann.mp3');au.volume=.9;ch.classList.add('live');ch.textContent='♪ 안내 방송 중';
-      au.addEventListener('timeupdate',()=>{ps.forEach((p,i)=>{if(au.currentTime>=AT[i])p.classList.add('on')});if(au.currentTime>=END-.3)showOff()});
-      au.addEventListener('ended',()=>{ps.forEach(p=>p.classList.add('on'));ch.textContent='♪ 안내 방송';showOff()});
-      au.play().catch(()=>play(false));}
-    else{ps.forEach((p,i)=>setTimeout(()=>p.classList.add('on'),reduce?0:400+i*1400));setTimeout(showOff,reduce?0:400+ps.length*1400)}}
+      const tick=()=>{if(!au||au.ended)return;if(!reduce)draw(au.currentTime);if(au.currentTime>=END-.3)showOff();requestAnimationFrame(tick)};
+      au.addEventListener('playing',()=>requestAnimationFrame(tick));
+      au.addEventListener('ended',()=>{draw(1e9);ch.textContent='♪ 안내 방송';showOff()});
+      au.play().catch(()=>{au=null;play(false)});}
+    else if(reduce)showOff();
+    else{// 소리 없이: 방송과 같은 순서로, 조금 빠르게 타이핑
+      const t0=performance.now(),sp=.55,last=SEG[2][1][2];
+      const tick=()=>{const t=SEG[0][0][1]+(performance.now()-t0)/1000/sp;draw(t);if(t>=last){showOff();return}requestAnimationFrame(tick)};
+      requestAnimationFrame(tick)}}
   ls.addEventListener('click',()=>play(true));
   sk.addEventListener('click',()=>play(false));
   off.addEventListener('click',()=>{if(au)au.pause();BGM.start();window.scrollTo(0,0);a.classList.add('gone');setTimeout(()=>{a.hidden=true;window.scrollTo(0,0)},600)});
