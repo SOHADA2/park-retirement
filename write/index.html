@@ -53,10 +53,10 @@ button[disabled]{background:#8D96A3;cursor:default}
     <a href="../#notes">퇴임 축하 페이지에서 보기 →</a>
     <div class="preview" id="pv"></div>
   </section>
-  <p class="foot">한 번 보낸 메모는 고칠 수 없어요. 고치고 싶으면 다시 보내 주시면 이전 것은 정리해 드릴게요.</p>
+  <p class="foot">한 번 보낸 메모는 고칠 수 없어요. 고치고 싶으면 다시 보내 주세요. 이전 것은 정리해 드릴게요.</p>
 </main>
 <script>
-const API='';
+const API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04';
 const f=document.getElementById('f'),nm=document.getElementById('name'),ms=document.getElementById('msg'),er=document.getElementById('err'),bt=document.getElementById('send');
 const q=new URLSearchParams(location.search);if(q.get('n'))nm.value=q.get('n').slice(0,20);
 try{const d=localStorage.getItem('pck_draft');if(d&&!ms.value)ms.value=d}catch(e){}
@@ -67,7 +67,8 @@ f.addEventListener('submit',async e=>{e.preventDefault();er.hidden=true;
   if(!msg){er.textContent='메모 내용을 적어 주세요';er.hidden=false;ms.focus();return}
   if(!API||API.indexOf('http')!==0){er.textContent='아직 메모함이 준비되지 않았어요. 조금 뒤에 다시 시도해 주세요';er.hidden=false;return}
   bt.disabled=true;bt.textContent='보내는 중…';
-  try{await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({name,msg})});
+  try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{name:{stringValue:name},msg:{stringValue:msg},t:{timestampValue:new Date().toISOString()}}})});
+    if(!r.ok)throw new Error('HTTP '+r.status);
     try{localStorage.removeItem('pck_draft')}catch(e){}
     f.hidden=true;const pv=document.getElementById('pv');pv.innerHTML='';const b=document.createElement('b');b.textContent=name;pv.appendChild(b);pv.appendChild(document.createTextNode(msg));document.getElementById('done').hidden=false;
   }catch(err){er.textContent='보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요';er.hidden=false;bt.disabled=false;bt.textContent='메모 보내기'}
