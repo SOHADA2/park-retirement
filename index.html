@@ -81,6 +81,50 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .itin li.now .y,.itin li.now b{color:var(--blue)}
 .itin li.next{border-bottom:2px solid var(--ink)}
 
+/* ── 차창 밖 풍경: 객실 안에서 보는 창(객실 사진 cabin.webp = Gemini 로 만든 것, 창유리만 투명). 사진이 창밖을 채워 흐르고, 가까운 기둥·울타리·땅은 더 빨리 번지며 스치고,
+   사진은 가장자리를 겹쳐 이어진 바깥 풍경처럼, 옅은 안개·유리 색조·객실 반사로 유리 너머에 있게. 질감은 SVG 잡음(외부 파일 없음) */
+.cabin{position:relative;margin-top:14px;aspect-ratio:840/836;border-radius:6px;overflow:hidden;background:#E2DED6}
+.cabin-img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;user-select:none;-webkit-user-drag:none}
+/* 창 자리(cabin_frame.py 가 잰 값보다 살짝 크게 — 가장자리는 창틀 사진이 덮음) */
+.pane{position:absolute;left:8.2%;top:14.8%;width:84%;height:57.8%;overflow:hidden;background:#BFD0DF;
+  touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;isolation:isolate}
+.pane:active{cursor:grabbing}
+.pane::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;box-shadow:inset 0 14px 16px -10px rgba(0,0,0,.4),inset 0 -8px 12px -8px rgba(0,0,0,.3)}
+.strip{position:absolute;left:0;top:0;bottom:0;display:flex;will-change:transform}
+.strip figure{margin:0 -34px 0 0;height:100%;aspect-ratio:4/5;flex:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
+.strip img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;filter:saturate(.9) contrast(.94) brightness(1.04)}
+/* 유리 너머 먼 바깥: 옅은 대기 안개(위쪽이 더 뿌옇게) */
+.haze{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(214,226,238,.30),rgba(214,226,238,.10) 55%,rgba(214,226,238,0))}
+.ground{position:absolute;left:-20px;right:-20px;bottom:-4px;height:34px;pointer-events:none;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='60'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.003 .45' numOctaves='3' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .08  0 0 0 0 .09  0 0 0 0 .05  1.6 0 0 0 -.45'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>") 0 0/900px 100%,linear-gradient(#7A7F5C,#5C6143);filter:blur(.4px);box-shadow:0 -6px 10px -4px rgba(40,44,30,.35)}
+.fence{position:absolute;left:0;right:0;bottom:10px;height:30px;pointer-events:none;opacity:.85;
+  background:linear-gradient(rgba(40,44,50,.75),rgba(40,44,50,.75)) 0 6px/100% 3px no-repeat,
+    repeating-linear-gradient(90deg,transparent 0,rgba(40,44,50,.8) 7px,rgba(40,44,50,.8) 10px,transparent 17px,transparent 52px)}
+.wire{position:absolute;left:0;right:0;top:18px;height:1.5px;background:rgba(30,34,40,.55);pointer-events:none;z-index:1;box-shadow:0 7px 0 -.5px rgba(30,34,40,.35)}
+.poles{position:absolute;inset:0;pointer-events:none;will-change:transform;z-index:1}
+.poles i{position:absolute;top:-10px;bottom:0;width:34px;margin-left:-11px;background:linear-gradient(90deg,transparent,#3E444C 30%,#7B828B 46%,#4A5058 60%,#2E3339 72%,transparent)}
+.poles i::before{content:"";position:absolute;top:22px;right:12px;width:66px;height:6px;background:linear-gradient(90deg,transparent,#3E444C 20%,#5A616A 80%,transparent);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.poles i::after{content:"";position:absolute;top:14px;right:56px;width:18px;height:9px;border-radius:4px;background:linear-gradient(90deg,transparent,#A9886A 30%,#C9A988 50%,#8E6F55 70%,transparent)}
+.refl{position:absolute;inset:0;opacity:.16;pointer-events:none;z-index:4;filter:blur(3px);mix-blend-mode:screen}
+.refl::before{content:"";position:absolute;left:8%;right:8%;top:10%;height:10px;border-radius:5px;background:rgba(255,250,235,.9)}
+.refl i{position:absolute;bottom:-20px;width:34%;height:46%;border-radius:22px 22px 0 0;background:rgba(90,130,200,.9)}
+.refl i:first-child{left:10%}.refl i:last-child{right:10%}
+.glass{position:absolute;inset:0;pointer-events:none;z-index:5;box-shadow:inset 0 0 0 999px rgba(150,175,165,.07);
+  background:linear-gradient(112deg,transparent 22%,rgba(255,255,255,.10) 30%,rgba(255,255,255,.03) 36%,transparent 44%,transparent 62%,rgba(255,255,255,.06) 68%,transparent 74%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size:auto,180px;opacity:.55;mix-blend-mode:screen}
+.halt{position:absolute;right:10px;bottom:38px;z-index:7;background:var(--ink);color:#fff;font-size:11.5px;font-family:var(--mono);padding:4px 8px;border-radius:3px}
+.winnow{display:flex;gap:10px;align-items:baseline;margin:12px 2px 0;font-size:16px;min-height:1.6em}
+.winnow span{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.winnow span::before{content:"지금 창밖 · "}
+.winnow.last b{color:var(--blue)}
+.rail{position:relative;display:flex;justify-content:space-between;align-items:center;height:16px;margin:16px 4px 0}
+.rail::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;background:var(--blue)}
+.rail button{position:relative;width:11px;height:11px;border-radius:50%;background:var(--paper);border:2px solid var(--blue);padding:0;transition:transform .2s}
+.rail button::after{content:"";position:absolute;inset:-9px -4px}
+.rail button.on{background:var(--blue);transform:scale(1.35)}
+.rail-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin:6px 0 0}
+
 /* ── 연구 기록 */
 .figs{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);margin-top:14px}
 .figs div{padding:12px 0}
@@ -231,6 +275,41 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
     <details class="all"><summary>논문·특허 제목 전체 보기</summary><ol id="shelf"></ol></details>
   </section>
 
+  <section aria-labelledby="h-win" id="win">
+    <div class="eyebrow">차창 밖 풍경</div>
+    <h2 id="h-win">함께 지나온 풍경</h2>
+    <p class="lead">창밖으로 지나가는 풍경이에요. 창을 누르면 잠시 서고, 손으로 끌어 넘길 수도 있어요</p>
+    <div class="cabin">
+      <div class="pane" id="pane" role="img" aria-label="기차 창밖으로 사진 11장이 차례로 지나가요">
+        <div class="strip" id="strip">
+      <figure><img src="p/01.jpg" alt="학사모를 쓴 젊은 시절 박사님" width="640" height="800"><figcaption hidden>출발하던 날</figcaption></figure>
+      <figure><img src="p/02.jpg" alt="웨딩 사진 속 두 분" width="640" height="800"><figcaption hidden>평생의 동행이 탑승했어요</figcaption></figure>
+      <figure><img src="p/04.jpg" alt="계곡 바위 앞에서 웃는 두 분" width="640" height="800"><figcaption hidden>여름, 잠시 쉬어 가는 역</figcaption></figure>
+      <figure><img src="p/05.jpg" alt="쾰른 대성당이 보이는 강가에 선 박사님" width="640" height="800"><figcaption hidden>멀리 유럽까지</figcaption></figure>
+      <figure><img src="p/06.jpg" alt="밤의 대관람차 앞에 선 박사님" width="640" height="800"><figcaption hidden>낯선 도시의 밤</figcaption></figure>
+      <figure><img src="p/07.jpg" alt="겨울 파리에서 목도리를 두른 박사님" width="640" height="800"><figcaption hidden>겨울 파리에서</figcaption></figure>
+      <figure><img src="p/08.jpg" alt="사진관에서 나란히 앉은 두 분" width="640" height="800"><figcaption hidden>나란히, 오래도록</figcaption></figure>
+      <figure><img src="p/09.jpg" alt="케이크 앞에 앉은 두 분" width="640" height="800"><figcaption hidden>작은 축하들</figcaption></figure>
+      <figure><img src="p/10.jpg" alt="거실 소파에서 쉬는 박사님과 브이를 한 어머님" width="640" height="800"><figcaption hidden>집이 제일 좋은 역</figcaption></figure>
+      <figure><img src="p/11.jpg" alt="소파에 누워 브이를 한 박사님" width="640" height="800"><figcaption hidden>이제는 소파역 장기 정차</figcaption></figure>
+      <figure><img src="p/12.jpg" alt="푸른 들판에서 어깨동무하고 웃는 두 분" width="640" height="800"><figcaption hidden>다음 역, 행복한 인생 2막</figcaption></figure>
+        </div>
+        <div class="haze" aria-hidden="true"></div>
+        <div class="ground" id="ground" aria-hidden="true"></div>
+        <div class="fence" id="fence" aria-hidden="true"></div>
+        <div class="wire" aria-hidden="true"></div>
+        <div class="poles" id="poles" aria-hidden="true"></div>
+        <div class="refl" id="refl" aria-hidden="true"><i></i><i></i></div>
+        <div class="glass" aria-hidden="true"></div>
+        <div class="halt" id="halt" hidden>잠시 정차 중</div>
+      </div>
+      <img class="cabin-img" src="cabin.webp" alt="" width="840" height="836">
+    </div>
+    <p class="winnow" aria-live="polite"><span id="nowno">01</span><b id="nowcap">출발하던 날</b></p>
+    <div class="rail" id="winrail" aria-hidden="true"></div>
+    <div class="rail-ends" aria-hidden="true"><span>출발</span><span>인생 2막</span></div>
+  </section>
+
   <section aria-labelledby="h-notes" id="notes">
     <div class="eyebrow">승객 메모</div>
     <h2 id="h-notes">가족이 남긴 메모</h2>
@@ -295,6 +374,33 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   // 메모 쓰기에서 「보기」로 넘어온 경우(#notes)는 첫 화면을 건너뛰고 메모로 바로
   if(location.hash==='#notes'){a.hidden=true;setTimeout(()=>document.getElementById('notes').scrollIntoView(),300)}
 })();
+// 차창 밖 풍경: 사진 띠가 왼쪽으로 흐르고(끝나면 처음부터 다시), 기둥 1.8배·울타리 3배·땅 4배 빠르게, 흔들리다 덜컹. 유리에 객실이 은은하게 비침
+(function(){const pane=document.getElementById('pane'),st=document.getElementById('strip'),po=document.getElementById('poles'),rl=document.getElementById('winrail'),
+    halt=document.getElementById('halt'),fe=document.getElementById('fence'),gr=document.getElementById('ground'),no=document.getElementById('nowno'),cap=document.getElementById('nowcap'),now=cap.parentNode;
+  const fs=[...st.querySelectorAll('figure')],N=fs.length,caps=fs.map(f=>f.querySelector('figcaption').textContent);
+  fs.forEach(f=>st.appendChild(f.cloneNode(true)));                     // 이어 붙여서 끊김 없이 돌게
+  const SPEED=reduce?0:46,POLE=1.8,FENCE=3.2;let tt=0,x=0,v=SPEED,target=null,paused=false,drag=null,last=0,seen=false,cur=-1,loop=1,pitch=1,poles=[];
+  const measure=()=>{const a=fs[0].getBoundingClientRect(),b=fs[1].getBoundingClientRect();pitch=b.left-a.left;loop=pitch*N;
+    po.innerHTML='';poles=[];const gap=pane.clientWidth*1.15;for(let i=0;i<3;i++){const e=document.createElement('i');po.appendChild(e);poles.push(e)}po._gap=gap};
+  const bs=caps.map((c,i)=>{const b=document.createElement('button');b.tabIndex=-1;b.addEventListener('click',()=>{target=i*pitch+pitch/2-pane.clientWidth/2;paused=false;halt.hidden=true});rl.appendChild(b);return b});
+  const mod=(a,m)=>((a%m)+m)%m;
+  function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
+    if(target!==null){const L=loop,d=mod(target-x+L/2,L)-L/2;x+=d*Math.min(1,dt*4);if(Math.abs(d)<1){x=target;target=null}}
+    else if(!paused&&!drag){x+=v*dt;tt+=dt}
+    x=mod(x,loop);const j=t%1150,bump=j<120?Math.sin(j/120*Math.PI)*2.2:0,sway=reduce||paused||drag?0:Math.sin(t/430)*1.1+bump;
+    st.style.transform=`translate3d(${-x}px,${sway}px,0)`;po.style.transform=fe.style.transform=`translateY(${sway*1.4}px)`;
+    fe.style.backgroundPosition=`0 6px,${-(x*FENCE)%52}px 0`;gr.style.backgroundPosition=`${-(x*FENCE*1.3)%900}px 0`;
+    const g=po._gap,px=x*POLE;poles.forEach((e,i)=>{e.style.left=(mod(i*g-px,g*3)-60)+'px'});
+    const k=mod(Math.round((x+pane.clientWidth/2-pitch/2)/pitch),N);
+    if(k!==cur){cur=k;no.textContent=String(k+1).padStart(2,'0');cap.textContent=caps[k];now.classList.toggle('last',k===N-1);bs.forEach((b,i)=>b.classList.toggle('on',i===k))}
+    if(seen)requestAnimationFrame(frame)}
+  new IntersectionObserver(es=>{const s=es[0].isIntersecting;if(s&&!seen){seen=true;last=0;requestAnimationFrame(frame)}else if(!s)seen=false},{threshold:.15}).observe(pane);
+  pane.addEventListener('pointerdown',e=>{drag={x:e.clientX,x0:x,moved:false};pane.setPointerCapture(e.pointerId)});
+  pane.addEventListener('pointermove',e=>{if(!drag)return;const d=e.clientX-drag.x;if(Math.abs(d)>4)drag.moved=true;x=drag.x0-d;target=null});
+  const up=()=>{if(!drag)return;if(!drag.moved){paused=!paused;halt.hidden=!paused}drag=null};
+  pane.addEventListener('pointerup',up);pane.addEventListener('pointercancel',()=>{drag=null});
+  measure();addEventListener('resize',measure);fs[0].querySelector('img').addEventListener('load',measure);
+  if(reduce){paused=true}})();
 // 가족 승객 메모 불러오기
 (function(){const API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04',box=document.getElementById('notelist');
   const empty=t=>{box.innerHTML='';const d=document.createElement('div');d.className='notes-empty';d.textContent=t;box.appendChild(d)};
