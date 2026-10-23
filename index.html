@@ -83,6 +83,8 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 
 /* ── 차창 밖 풍경: 객실 안에서 보는 창(객실 사진 cabin.webp = Gemini 로 만든 것, 창유리만 투명). 창밖엔 가족사진만 천천히 흐른다. 사진이 창밖을 채워 흐르고, 사진은 가장자리를 겹쳐 이어진 풍경처럼. (그려 넣은 기둥·울타리·안개·반사는 「그래픽 티가 난다」고 해서 뺌) */
 .cabin{position:relative;margin-top:14px;aspect-ratio:840/836;border-radius:6px;overflow:hidden;background:#E2DED6}
+.car{position:absolute;inset:-2.5%;will-change:transform}
+.shade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:3}
 .cabin-img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;user-select:none;-webkit-user-drag:none}
 /* 창 자리(cabin_frame.py 가 잰 값보다 살짝 크게 — 가장자리는 창틀 사진이 덮음) */
 .pane{position:absolute;left:8.2%;top:14.8%;width:84%;height:57.8%;overflow:hidden;background:#BFD0DF;
@@ -90,9 +92,9 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .pane:active{cursor:grabbing}
 .pane::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;box-shadow:inset 0 14px 16px -10px rgba(0,0,0,.4),inset 0 -8px 12px -8px rgba(0,0,0,.3)}
 .strip{position:absolute;left:0;top:0;bottom:0;display:flex;will-change:transform}
-.strip figure{margin:0 -34px 0 0;height:100%;aspect-ratio:4/5;flex:none;
+.strip figure{margin:0 -34px 0 0;height:100%;flex:none;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
-.strip img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.strip img{display:block;width:auto;height:100%;pointer-events:none;-webkit-user-drag:none}
 .halt{position:absolute;right:10px;bottom:10px;z-index:7;background:var(--ink);color:#fff;font-size:11.5px;font-family:var(--mono);padding:4px 8px;border-radius:3px}
 .winnow{display:flex;gap:10px;align-items:baseline;margin:12px 2px 0;font-size:16px;min-height:1.6em}
 .winnow span{font-family:var(--mono);font-size:11px;color:var(--faint)}
@@ -266,25 +268,33 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
     <h2 id="h-win">함께 지나온 풍경</h2>
     <p class="lead">창밖으로 지나가는 풍경이에요. 창을 누르면 잠시 서고, 손으로 끌어 넘길 수도 있어요</p>
     <div class="cabin">
-      <div class="pane" id="pane" role="img" aria-label="기차 창밖으로 사진 11장이 차례로 지나가요">
-        <div class="strip" id="strip">
-      <figure><img src="p/01.jpg" alt="학사모를 쓴 젊은 시절 박사님" width="640" height="800"><figcaption hidden>출발하던 날</figcaption></figure>
-      <figure><img src="p/02.jpg" alt="웨딩 사진 속 두 분" width="640" height="800"><figcaption hidden>평생의 동행이 탑승했어요</figcaption></figure>
-      <figure><img src="p/04.jpg" alt="계곡 바위 앞에서 웃는 두 분" width="640" height="800"><figcaption hidden>여름, 잠시 쉬어 가는 역</figcaption></figure>
-      <figure><img src="p/05.jpg" alt="쾰른 대성당이 보이는 강가에 선 박사님" width="640" height="800"><figcaption hidden>멀리 유럽까지</figcaption></figure>
-      <figure><img src="p/06.jpg" alt="밤의 대관람차 앞에 선 박사님" width="640" height="800"><figcaption hidden>낯선 도시의 밤</figcaption></figure>
-      <figure><img src="p/07.jpg" alt="겨울 파리에서 목도리를 두른 박사님" width="640" height="800"><figcaption hidden>겨울 파리에서</figcaption></figure>
-      <figure><img src="p/08.jpg" alt="사진관에서 나란히 앉은 두 분" width="640" height="800"><figcaption hidden>나란히, 오래도록</figcaption></figure>
-      <figure><img src="p/09.jpg" alt="케이크 앞에 앉은 두 분" width="640" height="800"><figcaption hidden>작은 축하들</figcaption></figure>
-      <figure><img src="p/10.jpg" alt="거실 소파에서 쉬는 박사님과 브이를 한 어머님" width="640" height="800"><figcaption hidden>집이 제일 좋은 역</figcaption></figure>
-      <figure><img src="p/11.jpg" alt="소파에 누워 브이를 한 박사님" width="640" height="800"><figcaption hidden>이제는 소파역 장기 정차</figcaption></figure>
-      <figure><img src="p/12.jpg" alt="푸른 들판에서 어깨동무하고 웃는 두 분" width="640" height="800"><figcaption hidden>다음 역, 행복한 인생 2막</figcaption></figure>
+      <div class="car" id="car">
+        <div class="pane" id="pane" role="img" aria-label="기차 창밖으로 사진 16장이 차례로 지나가요">
+          <div class="strip" id="strip">
+            <figure><img src="p/01.jpg" alt="학사모를 쓴 젊은 시절 박사님" width="562" height="720"><figcaption hidden>학사모를 쓰던 날</figcaption></figure>
+            <figure><img src="p/02.jpg" alt="웨딩 사진 속 두 분" width="901" height="720"><figcaption hidden>두 분이 함께 출발한 날</figcaption></figure>
+            <figure><img src="p/03.jpg" alt="계곡 바위 앞에서 웃는 두 분" width="557" height="720"><figcaption hidden>계곡에서, 젊은 날의 두 분</figcaption></figure>
+            <figure><img src="p/04.jpg" alt="쾰른 대성당이 보이는 강가에 선 박사님" width="635" height="720"><figcaption hidden>쾰른 대성당 앞 강가에서</figcaption></figure>
+            <figure><img src="p/05.jpg" alt="밤의 대관람차 앞에 선 박사님" width="554" height="720"><figcaption hidden>파리, 대관람차가 빛나던 밤</figcaption></figure>
+            <figure><img src="p/06.jpg" alt="겨울 파리에서 목도리를 두른 박사님" width="584" height="720"><figcaption hidden>목도리를 두른 겨울 파리</figcaption></figure>
+            <figure><img src="p/07.jpg" alt="사진관에서 나란히 앉은 두 분" width="540" height="720"><figcaption hidden>사진관에서, 나란히</figcaption></figure>
+            <figure><img src="p/08.jpg" alt="햇살 아래 목도리를 두른 박사님" width="490" height="720"><figcaption hidden>햇살 좋은 날</figcaption></figure>
+            <figure><img src="p/09.jpg" alt="손을 흔들며 웃는 박사님" width="497" height="720"><figcaption hidden>반갑게 손 흔들며</figcaption></figure>
+            <figure><img src="p/10.jpg" alt="환하게 웃는 박사님" width="464" height="493"><figcaption hidden>환하게 웃으며</figcaption></figure>
+            <figure><img src="p/11.jpg" alt="케이크 앞에 앉은 두 분" width="1250" height="720"><figcaption hidden>케이크 앞에서 두 분</figcaption></figure>
+            <figure><img src="p/12.jpg" alt="영상통화 화면 속 웃는 박사님" width="356" height="720"><figcaption hidden>영상통화 너머 웃음</figcaption></figure>
+            <figure><img src="p/13.jpg" alt="모자를 쓰고 안마의자에 앉은 박사님" width="960" height="720"><figcaption hidden>안마의자에서 쉬는 중</figcaption></figure>
+            <figure><img src="p/14.jpg" alt="거실 소파에서 쉬는 박사님과 브이를 한 어머님" width="923" height="720"><figcaption hidden>거실 소파에서, 함께</figcaption></figure>
+            <figure><img src="p/15.jpg" alt="소파에 누워 브이를 한 박사님" width="1086" height="720"><figcaption hidden>소파에 누워 브이</figcaption></figure>
+            <figure><img src="p/16.jpg" alt="푸른 들판에서 어깨동무하고 웃는 두 분" width="1262" height="720"><figcaption hidden>들판에서 함께 웃으며 · 다음 역, 인생 2막</figcaption></figure>
+          </div>
+          <div class="halt" id="halt" hidden>잠시 정차 중</div>
         </div>
-        <div class="halt" id="halt" hidden>잠시 정차 중</div>
+        <img class="cabin-img" src="cabin.webp" alt="" width="840" height="836">
+        <div class="shade" id="shade" aria-hidden="true"></div>
       </div>
-      <img class="cabin-img" src="cabin.webp" alt="" width="840" height="836">
     </div>
-    <p class="winnow" aria-live="polite"><span id="nowno">01</span><b id="nowcap">출발하던 날</b></p>
+    <p class="winnow" aria-live="polite"><span id="nowno">01</span><b id="nowcap">학사모를 쓰던 날</b></p>
     <div class="rail" id="winrail" aria-hidden="true"></div>
     <div class="rail-ends" aria-hidden="true"><span>출발</span><span>인생 2막</span></div>
   </section>
@@ -353,21 +363,27 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   // 메모 쓰기에서 「보기」로 넘어온 경우(#notes)는 첫 화면을 건너뛰고 메모로 바로
   if(location.hash==='#notes'){a.hidden=true;setTimeout(()=>document.getElementById('notes').scrollIntoView(),300)}
 })();
-// 차창 밖 풍경: 사진 띠가 왼쪽으로 천천히 흐르고(끝나면 처음부터 다시), 아주 살짝 흔들림
-(function(){const pane=document.getElementById('pane'),st=document.getElementById('strip'),rl=document.getElementById('winrail'),
+// 차창 밖 풍경: 사진 띠가 왼쪽으로 천천히 흐르고(끝나면 처음부터 다시). 객실(창틀 사진째)은 달리는 기차처럼 살짝 흔들리고,
+// 이음매를 지날 때마다 덜컹 — 창밖 풍경은 반대로 조금 밀려 깊이가 생긴다. 정차 중엔 흔들림도 멈춤. 사진 너비는 제각각.
+(function(){const pane=document.getElementById('pane'),st=document.getElementById('strip'),car=document.getElementById('car'),sh=document.getElementById('shade'),rl=document.getElementById('winrail'),
     halt=document.getElementById('halt'),no=document.getElementById('nowno'),cap=document.getElementById('nowcap'),now=cap.parentNode;
   const fs=[...st.querySelectorAll('figure')],N=fs.length,caps=fs.map(f=>f.querySelector('figcaption').textContent);
   fs.forEach(f=>st.appendChild(f.cloneNode(true)));                     // 이어 붙여서 끊김 없이 돌게
-  const SPEED=reduce?0:22;let x=0,v=SPEED,target=null,paused=false,drag=null,last=0,seen=false,cur=-1,loop=1,pitch=1;
-  const measure=()=>{const a=fs[0].getBoundingClientRect(),b=fs[1].getBoundingClientRect();pitch=b.left-a.left;loop=pitch*N};
-  const bs=caps.map((c,i)=>{const b=document.createElement('button');b.tabIndex=-1;b.addEventListener('click',()=>{target=i*pitch+pitch/2-pane.clientWidth/2;paused=false;halt.hidden=true});rl.appendChild(b);return b});
+  const SPEED=reduce?0:22;let x=0,target=null,paused=false,drag=null,last=0,seen=false,cur=-1,loop=1,mid=[],nextJ=1500,jt=-1e9,jA=0;
+  const measure=()=>{const o=st.getBoundingClientRect().left;mid=fs.map(f=>{const r=f.getBoundingClientRect();return r.left-o+r.width/2});
+    const a=fs[0].getBoundingClientRect(),c=st.children[N].getBoundingClientRect();loop=c.left-a.left||1};
+  const bs=caps.map((c,i)=>{const b=document.createElement('button');b.tabIndex=-1;b.addEventListener('click',()=>{target=mid[i]-pane.clientWidth/2;paused=false;halt.hidden=true});rl.appendChild(b);return b});
   const mod=(a,m)=>((a%m)+m)%m;
-  function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
+  function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;const moving=!reduce&&!paused&&!drag;
     if(target!==null){const L=loop,d=mod(target-x+L/2,L)-L/2;x+=d*Math.min(1,dt*4);if(Math.abs(d)<1){x=target;target=null}}
-    else if(!paused&&!drag)x+=v*dt;
-    x=mod(x,loop);const sway=reduce||paused||drag?0:Math.sin(t/520)*.7;
-    st.style.transform=`translate3d(${-x}px,${sway}px,0)`;
-    const k=mod(Math.round((x+pane.clientWidth/2-pitch/2)/pitch),N);
+    else if(moving)x+=SPEED*dt;
+    x=mod(x,loop);
+    // 흔들림: 느린 좌우·위아래 + 이음매 덜컹(감쇠 진동, 1.4~2.6초 간격)
+    let cx=0,cy=0,cr=0;if(moving){if(t>nextJ){jt=t;jA=1.4+Math.random()*1.2;nextJ=t+1400+Math.random()*1200}
+      const e=(t-jt)/1000,jolt=e<.6?jA*Math.exp(-e*9)*Math.sin(e*42):0;cx=Math.sin(t/1700)*.9;cy=Math.sin(t/640)*.7+jolt;cr=Math.sin(t/2300)*.12}
+    car.style.transform=`translate3d(${cx}px,${cy}px,0) rotate(${cr}deg)`;st.style.transform=`translate3d(${-x-cx*.6}px,${-cy*.8}px,0)`;
+    sh.style.opacity=moving?(.025+.025*Math.sin(t/2900)).toFixed(3):0;
+    const c=x+pane.clientWidth/2;let k=0,dd=1e9;mid.forEach((m,i)=>{const d=Math.abs(mod(c-m+loop/2,loop)-loop/2);if(d<dd){dd=d;k=i}});
     if(k!==cur){cur=k;no.textContent=String(k+1).padStart(2,'0');cap.textContent=caps[k];now.classList.toggle('last',k===N-1);bs.forEach((b,i)=>b.classList.toggle('on',i===k))}
     if(seen)requestAnimationFrame(frame)}
   new IntersectionObserver(es=>{const s=es[0].isIntersecting;if(s&&!seen){seen=true;last=0;requestAnimationFrame(frame)}else if(!s)seen=false},{threshold:.15}).observe(pane);
@@ -375,7 +391,7 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   pane.addEventListener('pointermove',e=>{if(!drag)return;const d=e.clientX-drag.x;if(Math.abs(d)>4)drag.moved=true;x=drag.x0-d;target=null});
   const up=()=>{if(!drag)return;if(!drag.moved){paused=!paused;halt.hidden=!paused}drag=null};
   pane.addEventListener('pointerup',up);pane.addEventListener('pointercancel',()=>{drag=null});
-  measure();addEventListener('resize',measure);fs[0].querySelector('img').addEventListener('load',measure);
+  measure();addEventListener('resize',measure);st.querySelectorAll('img').forEach(i=>i.addEventListener('load',measure));
   if(reduce){paused=true}})();
 // 가족 승객 메모 불러오기
 (function(){const API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04',box=document.getElementById('notelist');
