@@ -26,31 +26,40 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wrap:balance}
 .lead{margin:0;color:var(--sub);font-size:14px}
 
-/* ── 첫 화면: 승차권 자동발매기 */
-.kiosk{position:fixed;inset:0;z-index:30;background:#2B3038;display:flex;align-items:center;justify-content:center;
-  padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));transition:opacity .45s}
-.kiosk.gone{opacity:0;pointer-events:none}
-.machine{width:min(400px,100%);background:#D9DDE2;border-radius:18px;padding:16px;box-shadow:inset 0 -6px 0 #B9BFC7,0 24px 48px rgba(0,0,0,.35)}
-.screen{background:#fff;border-radius:8px;padding:16px 16px 14px;border:6px solid #3A414B}
-.screen .bar{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--sub);border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:10px}
-.screen h1{font-size:19px;margin:0 0 10px;letter-spacing:-.01em}
-.sel{display:grid;grid-template-columns:64px 1fr;row-gap:7px;font-size:14px;margin:0}
-.sel dt{color:var(--sub);font-size:12.5px}
-.sel dd{margin:0;font-weight:600}
-.fare{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:1px dashed var(--rule);margin-top:12px;padding-top:10px}
-.fare b{font-family:var(--mono);font-size:22px}
-.fare small{color:var(--sub);font-size:12px}
-.keys{display:flex;gap:10px;margin-top:14px}
-.key{flex:1;padding:14px 10px;border-radius:8px;font-weight:700;font-size:15px;background:var(--blue);color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25)}
-.key:active{box-shadow:none;transform:translateY(2px)}
-.key[disabled]{background:#8D96A3;cursor:default}
-.slot{margin:16px auto 0;width:78%;height:12px;border-radius:6px;background:#22272E;box-shadow:inset 0 3px 4px rgba(0,0,0,.6)}
-.out{position:relative;margin:0 auto;width:70%;height:0;overflow:hidden;transition:height 1.6s steps(16)}
-.out .slip{position:absolute;left:0;right:0;bottom:0;height:112px;background:#fff;border-radius:0 0 4px 4px;padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.55;color:var(--ink)}
-.machine.printing .out,.machine.done .out{height:112px}
-.machine .take{display:none;margin-top:12px}
-.machine.done .take{display:flex}
-
+/* ── 첫 화면: 종착역 도착 */
+.arrive{position:fixed;inset:0;z-index:30;background:#1E242C;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  padding-block:24px;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));transition:opacity .6s}
+.arrive.gone{opacity:0;pointer-events:none}
+.ann{width:min(400px,100%);font-size:16px;line-height:1.75;color:#C9CED6;min-height:9.5em}
+.ann p{margin:0;opacity:0;transform:translateY(6px);transition:opacity .6s,transform .6s}
+.ann p.on{opacity:1;transform:none}
+.ann p b{color:#fff;font-weight:600}
+.ann .chime{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:#7E8794;margin-bottom:10px}
+.sign{width:min(400px,100%);background:#fff;color:var(--ink);border-radius:6px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.4)}
+.sign .term{display:flex;justify-content:space-between;align-items:center;background:var(--blue);color:#fff;padding:7px 14px;font-size:12px;font-weight:600;letter-spacing:.06em}
+.sign .term span:last-child{font-family:var(--mono);font-weight:500;opacity:.85}
+.sign .nm{text-align:center;padding:18px 12px 6px;font-size:clamp(22px,6.4vw,28px);font-weight:700;letter-spacing:-.01em}
+.sign .en{text-align:center;font-family:var(--mono);font-size:11px;color:var(--sub);padding-bottom:12px;letter-spacing:.08em}
+.sign .tr{display:flex;justify-content:space-between;border-top:1px solid var(--rule);padding:9px 14px;font-size:12.5px;color:var(--sub)}
+.sign .tr b{color:var(--blue)}
+.off{background:#fff;color:var(--ink);font-weight:700;font-size:15px;padding:13px 34px;border-radius:999px;opacity:0;transition:opacity .5s}
+.off.on{opacity:1}
+.off:focus-visible{outline:3px solid #8FB4EA;outline-offset:4px}
+/* ── 본문 환승 안내 */
+.xfer{background:var(--paper);border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.05),0 8px 20px rgba(27,31,36,.08);margin-top:14px}
+.xfer .head{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;padding:9px 14px;font-size:12.5px;font-weight:600}
+.xfer .head span:last-child{font-family:var(--mono);font-weight:500;opacity:.8}
+.xfer .body{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:18px 14px}
+.xfer .from small,.xfer .to small{display:block;font-size:11px;color:var(--sub)}
+.xfer .from b{font-size:16px;color:var(--sub);text-decoration:line-through;text-decoration-thickness:1px}
+.xfer .to{text-align:right}
+.xfer .to b{font-size:18px;color:var(--blue)}
+.xfer .arrow{font-family:var(--mono);color:var(--faint)}
+.xfer .foot2{border-top:1px solid var(--rule);display:grid;grid-template-columns:repeat(3,1fr)}
+.xfer .foot2 div{padding:9px 14px}
+.xfer .foot2 div+div{border-left:1px solid var(--rule)}
+.xfer .foot2 small{display:block;font-size:11px;color:var(--sub)}
+.xfer .foot2 b{font-size:13.5px;white-space:nowrap}
 /* ── 머리 */
 .hero{display:grid;gap:16px}
 .hero h1{font-size:clamp(30px,9vw,40px);line-height:1.15;font-weight:700;letter-spacing:-.025em;margin:0}
@@ -59,47 +68,6 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .portrait img{width:112px;height:140px;object-fit:cover;object-position:50% 25%;display:block}
 .portrait figcaption{font-size:13px;color:var(--sub);border-left:2px solid var(--ink);padding-left:10px}
 .portrait figcaption b{color:var(--ink)}
-
-/* ── 승차권 */
-.ticket{position:relative;background:var(--paper);border-radius:6px;box-shadow:0 1px 0 rgba(0,0,0,.06),0 10px 24px rgba(27,31,36,.10);overflow:hidden;margin-top:14px}
-.t-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--rule)}
-.t-head b{font-size:15px;letter-spacing:.02em}
-.t-head span{font-family:var(--mono);font-size:11px;color:var(--sub)}
-.t-body{position:relative;padding:16px 16px 14px;background:repeating-radial-gradient(circle at 110% -20%,transparent 0 9px,var(--tint) 9px 10px)}
-.route{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:10px}
-.route .k{display:block;font-size:11px;color:var(--sub)}
-.route b{display:block;font-size:17px;line-height:1.3;letter-spacing:-.01em}
-.route .y{font-family:var(--mono);font-size:13px;color:var(--sub)}
-.route .to{text-align:right}
-.route .to b{color:var(--blue)}
-.route .arrow{font-family:var(--mono);color:var(--faint);padding-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px;border-top:1px solid var(--rule)}
-.grid div{padding:9px 0 0;min-width:0}
-.grid div+div{padding-left:10px;border-left:1px solid var(--rule)}
-.grid small{display:block;font-size:11px;color:var(--sub)}
-.grid b{font-size:14px;white-space:nowrap}
-.micro{margin-top:14px;height:13px;overflow:hidden;white-space:nowrap;font-size:5.5px;line-height:6.5px;color:#9FB0C8;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.perf{position:relative;height:0;border-top:2px dashed var(--rule);margin:0 14px}
-.perf:before,.perf:after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--page)}
-.perf:before{left:-25px}.perf:after{right:-25px}
-.stub{position:relative;padding:14px 16px 16px;transition:transform .5s cubic-bezier(.2,1.3,.4,1)}
-.stub.dragging{transition:none}
-.ticket.used .stub{transform:translateY(12px) rotate(1.4deg)}
-.ticket.used .perf{border-top-color:transparent}
-.stub .row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.stub .who small{display:block;font-size:11px;color:var(--sub)}
-.stub .who b{font-size:16px}
-.code{font-family:var(--mono);font-size:11px;color:var(--sub);text-align:right;line-height:1.4}
-.barcode{height:34px;margin-top:12px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px,var(--ink) 8px 11px,transparent 11px 12px,var(--ink) 12px 13px,transparent 13px 16px)}
-.grip{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:10px;border:1px dashed var(--blue);border-radius:6px;color:var(--blue);font-size:13px;font-weight:600;
-  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
-.ticket.used .grip{visibility:hidden}
-.stamp{position:absolute;right:18px;top:6px;width:88px;height:88px;border:3px solid var(--red);border-radius:50%;color:var(--red);display:grid;place-items:center;text-align:center;
-  font-weight:700;font-size:15px;line-height:1.15;transform:rotate(-12deg) scale(1.4);opacity:0;transition:opacity .2s,transform .3s cubic-bezier(.2,1.6,.4,1);background:rgba(255,255,255,.4)}
-.stamp small{display:block;font-family:var(--mono);font-size:10px;font-weight:500;margin-top:2px}
-.ticket.used .stamp{opacity:.88;transform:rotate(-12deg) scale(1)}
-.after{font-size:13px;color:var(--sub);text-align:center;margin:12px 0 0}
-.alt{display:block;margin:4px auto 0;font-size:12.5px;color:var(--sub);text-decoration:underline;text-underline-offset:3px}
 
 /* ── 지나온 역 */
 .itin{list-style:none;margin:14px 0 0;padding:0;border-top:2px solid var(--ink)}
@@ -155,24 +123,20 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 </head><body>
 
 
-<div class="kiosk" id="kiosk" role="dialog" aria-modal="true" aria-label="승차권 자동발매기">
-  <div class="machine" id="machine">
-    <div class="screen">
-      <div class="bar"><span>승차권 자동발매기</span><span>2026.10</span></div>
-      <h1>승차권을 확인해 주세요</h1>
-      <dl class="sel">
-        <dt>출발</dt><dd>한국철도기술연구원</dd>
-        <dt>도착</dt><dd>행복한 인생 2막</dd>
-        <dt>승객</dt><dd>박찬경 박사님 1명</dd>
-        <dt>좌석</dt><dd>평생 VIP석</dd>
-      </dl>
-      <div class="fare"><small>운임 · 그동안의 수고로 결제 완료</small><b>0원</b></div>
-      <div class="keys"><button class="key" id="issue" type="button">발권하기</button></div>
-    </div>
-    <div class="slot" aria-hidden="true"></div>
-    <div class="out" aria-hidden="true"><div class="slip">인생2막 특급 001열차<br>한국철도기술연구원<br>→ 행복한 인생 2막<br>2026.10 · 평생 VIP석<br>승객 박찬경 박사님</div></div>
-    <div class="keys take"><button class="key" id="take" type="button">승차권 받기</button></div>
+<div class="arrive" id="arrive" role="dialog" aria-modal="true" aria-label="종착역 도착 안내">
+  <div class="ann" id="ann" aria-live="polite">
+    <div class="chime">♪ 안내 방송</div>
+    <p>이번 역은 이 열차의 종착역,<br><b>한국철도기술연구원역</b>입니다.</p>
+    <p>1997년부터 이 열차를 이용해 주신<br><b>박찬경 박사님</b>, 그동안 정말 고생 많으셨습니다.</p>
+    <p>인생 2막 방면으로 가실 분은<br>이번 역에서 갈아타시기 바랍니다.</p>
   </div>
+  <div class="sign" aria-hidden="true">
+    <div class="term"><span>종착 · TERMINAL</span><span>2026.10</span></div>
+    <div class="nm">한국철도기술연구원</div>
+    <div class="en">1997 — 2026</div>
+    <div class="tr"><span>환승</span><b>인생 2막 방면 ▸</b></div>
+  </div>
+  <button class="off" id="off" type="button">내리기</button>
 </div>
 <button class="bgm" id="bgm" type="button" hidden aria-pressed="false">♪ 음악 끄기</button>
 
@@ -187,36 +151,21 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
   </header>
 
   <section aria-labelledby="h-tk">
-    <div class="eyebrow">승차권</div>
-    <h2 id="h-tk">인생 2막행 승차권이 발권되었어요</h2>
-    <article class="ticket" id="ticket" aria-label="인생 2막행 승차권">
-      <div class="t-head"><b>인생2막 특급</b><span>001열차 · 1호차</span></div>
-      <div class="t-body">
-        <div class="route">
-          <div><span class="k">출발</span><b>한국철도<br>기술연구원</b><span class="y">1997</span></div>
-          <div class="arrow">──▸</div>
-          <div class="to"><span class="k">도착</span><b>행복한<br>인생 2막</b><span class="y">2026.10 ~</span></div>
-        </div>
-        <div class="grid">
-          <div><small>좌석</small><b>평생 VIP석</b></div>
-          <div><small>운임</small><b class="mono">0원</b></div>
-          <div><small>발권</small><b>가족 일동</b></div>
-        </div>
-        <div class="micro" id="micro" aria-hidden="true"></div>
+    <div class="eyebrow">환승 안내</div>
+    <h2 id="h-tk">이제 인생 2막 방면으로 갈아타실 차례예요</h2>
+    <div class="xfer">
+      <div class="head"><span>환승 · TRANSFER</span><span>2026.10</span></div>
+      <div class="body">
+        <div class="from"><small>내린 역</small><b>한국철도<br>기술연구원</b></div>
+        <div class="arrow">──▸</div>
+        <div class="to"><small>갈아탈 노선</small><b>행복한<br>인생 2막</b></div>
       </div>
-      <div class="perf"></div>
-      <div class="stub" id="stub">
-        <div class="row">
-          <div class="who"><small>승객</small><b>박찬경 박사님</b></div>
-          <div class="code">2026-10-PCK<br>NO. 0001</div>
-        </div>
-        <div class="barcode" aria-hidden="true"></div>
-        <div class="grip" id="grip" role="button" tabindex="0" aria-label="승차권을 찢어 검표하기">↓ 이 부분을 아래로 당겨 검표하기</div>
-        <div class="stamp" aria-hidden="true"><span>승차<br>확인<small>2026.10</small></span></div>
+      <div class="foot2">
+        <div><small>승객</small><b>박찬경 박사님</b></div>
+        <div><small>좌석</small><b>평생 VIP석</b></div>
+        <div><small>예약</small><b>가족 일동</b></div>
       </div>
-    </article>
-    <p class="after" id="after">아래 칸을 손가락으로 당기면 검표 도장이 찍혀요</p>
-    <button class="alt" id="board" type="button">버튼으로 검표하기</button>
+    </div>
   </section>
 
   <section aria-labelledby="h-itin" id="itin">
@@ -277,7 +226,7 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 const TITLES = [{"y": "1997", "t": "전후동력 새마을호 철도차량의 진동성능 개선에 관한 연구"}, {"y": "1998", "t": "Vampire를 이용한 경부고속철도 차량의 동적 안정성 해석"}, {"y": "1998", "t": "관절형 경량전철의 현가특성 설계 및 안정성 해석"}, {"y": "1998", "t": "철도차량 동특성 해석을 위한 휠/레일 상호작용의 선형모델링 연구"}, {"y": "1999", "t": "관절형 경량전철의 주행성능 해석"}, {"y": "1999", "t": "철도차량 현수장치의 탈선에 대한 민감도 연구"}, {"y": "2000", "t": "G7 고속전철기술개발사업과 동역학 및 제어분야 기술개발"}, {"y": "2000", "t": "대차프레임의 피로설계 및 피로강도 평가"}, {"y": "2000", "t": "반응표면모델에 의한 철도 차량 대차의 탄성조인트 최적설계"}, {"y": "2000", "t": "철도차량 동적 진동특성을 고려한 다목적함수 최적설계"}, {"y": "2001", "t": "경부고속철도 시험선 구간에서 G7 고속전철 차량의 동특성 검토"}, {"y": "2001", "t": "고속전철의 동적특성에 따른 효율적인 현가장치 최적화 방안 연구"}, {"y": "2001", "t": "고속전철의 와전류 제동장치 동적 거동특성 연구"}, {"y": "2001", "t": "고속전철의 와전류 제동장치 동적 최적화 연구"}, {"y": "2001", "t": "도시철도차량의 동적 차량한계 설정에 관한 연구"}, {"y": "2001", "t": "동적거동 관점에서의 돌풍에 대한 고속전철 운행속도 영향 연구"}, {"y": "2001", "t": "바람이 고속전철의 동적 안전성에 미치는 영향 분석"}, {"y": "2001", "t": "크리깅 메타모델에 의한 철도차량 현수장치 최적설계"}, {"y": "2002", "t": "고속철도 시운전시험 계측시스템 개발에 관한 연구"}, {"y": "2002", "t": "고속철도 시운전시험 및 평가용 측정시스템 개발(II) - 소프트웨어"}, {"y": "2002", "t": "도시철도 차량의 동적거동을 고려한 차량한계 해석"}, {"y": "2002", "t": "반응표면모델을 이용한 한국형 고속전철 현가장치의 효율적인 최적설계"}, {"y": "2002", "t": "비선형 크립이론을 이용한 한국형 고속전철의 동특성 해석"}, {"y": "2002", "t": "신경회로망 모델을 이용한 철도 현가장치 설계변수 최적화"}, {"y": "2002", "t": "신경회로망 모델을 이용한 철도 현가장치 설계변수 최적화"}, {"y": "2002", "t": "철도 승차감 평가방법의 상호관계 분석"}, {"y": "2002", "t": "전기철도 시험 계측 시스템"}, {"y": "2002", "t": "철도 승차감 측정 시스템"}, {"y": "2002", "t": "철도 차량의 전기 장치 온도 감지 시스템"}, {"y": "2002", "t": "철도 차량의 차축 속도 검지 장치"}, {"y": "2002", "t": "철도차량의 성능 검증을 위한 시험 장치"}, {"y": "2003", "t": "KTX 견인, 재동성능용 계측시스템 구축"}, {"y": "2003", "t": "UIC 및 ISO 규정에 따른 철도 차량용 승차감 측정시스템 개발"}, {"y": "2003", "t": "고속철도 교량/토공 접속부에서의 궤도 및 차량 거동 특성"}, {"y": "2003", "t": "국내 고속철도 차량의 승차감에 대한 고찰"}, {"y": "2003", "t": "시운전 시험을 통한 한국형 고속전철 차체진동 특성의 분석 및 평가"}, {"y": "2003", "t": "시운전 시험을 통한 한국형 고속전철에 대한 승차감의 분석"}, {"y": "2003", "t": "시운전 시험을 통한 한국형 고속전철의 차체진동 특성"}, {"y": "2003", "t": "추진장치 성능측정 시스템에 관한 연구"}, {"y": "2003", "t": "크리깅 모델에 의한 철도차량 현수장치 최적설계"}, {"y": "2003", "t": "한국형 고속전철의 기계 제동력 측정 방법"}, {"y": "2003", "t": "한국형 고속전철의 주행시험과 이론해석 결과의 비교분석"}, {"y": "2003", "t": "한국형 고속전철의 주행시험을 통한 진동 모드 분석 연구"}, {"y": "2003", "t": "한국형 고속전철의 주행조건에 따른 진동특성 분석에 관한 연구"}, {"y": "2003", "t": "한국형 고속전철의 주행진동 특성에 관한 연구"}, {"y": "2003", "t": "한국형 고속전철의 진동가속도 시험 연구"}, {"y": "2003", "t": "한국형 고속전철의 차체 진동특성 분석"}, {"y": "2003", "t": "센서와 통신망을 이용한 신호계측장치"}, {"y": "2003", "t": "전장품의 제어신호와 철도 차량 통신망을 이용한신호측정장치"}, {"y": "2003", "t": "철도차량 배터리 충전기의 온도계측장치"}, {"y": "2003", "t": "철도차량 이동용 시험계측장치"}, {"y": "2003", "t": "철도차량의 주행속도 및 이동거리 측정 시스템"}, {"y": "2003", "t": "철도차량의 차륜 활주 감지 시스템"}, {"y": "2004", "t": "고속선/기존선 연계운행에 대한 고속철도 차량의 승차감에 관한 연구"}, {"y": "2004", "t": "고속선/기존선 운행에 따른 고속철도 차량의 승차감 특성 분석"}, {"y": "2004", "t": "고속철도 전기제동 특성에 관한 연구"}, {"y": "2004", "t": "고속철도차량 보조전원장치 특성 연구"}, {"y": "2004", "t": "고속철도차량의 주행 특성에 관한 연구"}, {"y": "2004", "t": "다기능성을 갖는 철도 차량용 승차감 측정시스템 개발"}, {"y": "2004", "t": "시운전시험을 통한 고속철도 차량의 제동 특성에 관한 연구"}, {"y": "2004", "t": "시험을 통한 한국형 고속전철 차량의 속도에 따른 실내소음 수준분석"}, {"y": "2004", "t": "차량신호를 이용한 고장진단에 관한 연구"}, {"y": "2004", "t": "한국형 고속전철 개발열차의 차량별 속도에 따른 실내 소음 특성 분석"}, {"y": "2004", "t": "한국형 고속전철 현가장치 최적설계를 위한 반응표면모델과 유전자 알고리즘 모델에 관한 연구"}, {"y": "2004", "t": "한국형 고속전철의 기존선 주행 진동가속도 특성 분석 - 곡선 통과속도 중심으로"}, {"y": "2004", "t": "Wheel slip detection system for railway vehicles (국제출원, 국내 특허와 같은 계열)"}, {"y": "2004", "t": "고속철도차량 차체 외부압력계측시스템"}, {"y": "2004", "t": "전기철도차량의 배터리 충전기 진단 시스템"}, {"y": "2004", "t": "전기철도차량의 전력공급 감시 시스템"}, {"y": "2004", "t": "전기철도차량의 전장품상태 보조측정 시스템"}, {"y": "2004", "t": "철도차량의 승차감 종합측정시스템"}, {"y": "2005", "t": "시운전 시험을 통한 한국형 고속열차의 승차감 변화추세에 관한 연구"}, {"y": "2005", "t": "추진시스템의 고장진단에 관한 연구"}, {"y": "2005", "t": "한국형 고속열차 전력시스템 특성 연구"}, {"y": "2005", "t": "한국형 고속열차의 350km/h 본선 주행시험을 통해 본 고속열차용 팬터그래프의 이선 특성과 동적 특성 고찰"}, {"y": "2005", "t": "한국형 고속전철의 350Km/h 주행에 대한 진동 가속도 분석"}, {"y": "2005", "t": "철도선로의 선로데이터 측정장치"}, {"y": "2005", "t": "철도차량용 자갈 날림판"}, {"y": "2006", "t": "UIC 518의 진동 가속도 계측을 통한 한국형 고속전철의 350km/h 주행 동적 거동 평가"}, {"y": "2006", "t": "고속열차의 차간 공간에 의해 발생하는 실내소음 특성 분석"}, {"y": "2006", "t": "고속열차의 차간 공간에서 발생하는 공력소음의 특성"}, {"y": "2006", "t": "도시철도차량의 차륜마모에 따른 횡가속도 패턴분석"}, {"y": "2006", "t": "전기철도차량 고조파 전류 시험"}, {"y": "2006", "t": "제동에너지 관점에서의 최적 디스크 제동력 패턴 설정"}, {"y": "2006", "t": "차세대 고속철도기술개발사업 추진방향"}, {"y": "2006", "t": "한국형 고속열차 신뢰성 시험평가 요건관리 체계 구축"}, {"y": "2006", "t": "한국형 고속열차 전기시스템 특성 연구"}, {"y": "2006", "t": "한국형고속열차 차량시스템의 신뢰성 성장 평가"}, {"y": "2006", "t": "한국형고속열차 횡방향 진동제어"}, {"y": "2006", "t": "한국형고속열차의 가속도계를 이용한 궤도 불규칙도 검측"}, {"y": "2006", "t": "한국형고속열차의 디스크-패드 마찰계수 측정에 관한 연구"}, {"y": "2006", "t": "한국형틸팅열차의 효과적인 동적 거동 측정 방안 도출"}, {"y": "2006", "t": "Apparatus for measuring railroad track parameters (국제출원, 국내 특허와 같은 계열)"}, {"y": "2006", "t": "철도차량의 견인력 및 제동력 측정 시스템 및 그 방법"}, {"y": "2007", "t": "고속철도 차량의 제동성능 해석에 대한 실험적 검증"}, {"y": "2008", "t": "가속도 값을 이용한 궤도 불규칙도 검측"}, {"y": "2008", "t": "개념단계에서 차세대고속철도 6량 편성차량의 현가요소 특성 분석"}, {"y": "2008", "t": "개념적 관점에서 차세대고속철도차량의 현가요소 특성 분석"}, {"y": "2008", "t": "고속철도 승차감 평가에 통계적 기법의 적용"}, {"y": "2008", "t": "추리통계학을 이용한 고속철도 승차감 평가에 대한 고찰"}, {"y": "2008", "t": "한국형 고속열차의 공익적 목적 활용방안 대안 연구"}, {"y": "2009", "t": "기본설계 단계에서 분산형 고속철도차량의 현가요소 최적화"}, {"y": "2009", "t": "철도차량 현수장치의 식스시그마 강건 설계"}, {"y": "2009", "t": "전기철도 차량 집전장치의 회전각도 측정 지그"}, {"y": "2010", "t": "고속열차 추진성능 시험평가"}, {"y": "2010", "t": "고속철도용 판토그라프 성능 계측 연구"}, {"y": "2010", "t": "고속철도용 판토그라프 접촉력 측정을 위한 스트레인 게이지 내장형 하중센서 개발"}, {"y": "2010", "t": "고저틀림에 따른 차세대고속열차의 주행안전성 영향 분석"}, {"y": "2010", "t": "승차감 평가를 위한 주파수 보정곡선의 분석"}, {"y": "2010", "t": "신한국형고속열차의 주행저항 성능시험"}, {"y": "2010", "t": "완화곡선형상별 차량주행안전성 및 승차감 분석"}, {"y": "2010", "t": "철도차량의 주행패턴 최적화에 대한 연구"}, {"y": "2010", "t": "판토그라프 접촉력 측정을 위한 스트레인 게이지 내장형 센서 개발"}, {"y": "2010", "t": "전기철도의 집전성능정보 전송용 광케이블 절연 튜브"}, {"y": "2010", "t": "회전각도 측정을 이용한 전기철도 차량용 집전장치의 물리량 측정 시스템"}, {"y": "2011", "t": "EN규격을 적용한 철도차량의 승차감 평가"}, {"y": "2011", "t": "z변환을 이용한 시간영역에서의 승차감 평가"}, {"y": "2011", "t": "고속열차 현가장치 특성 민감도 분석 연구"}, {"y": "2011", "t": "유한 요소 해석 기법을 이용한 고속 철도 차량의 집전 성능 해석"}, {"y": "2011", "t": "평면원곡선과 종곡선 경합시 보정캔트의 효과에 대한 해석적 연구"}, {"y": "2011", "t": "전기철도 차량 집전장치 접촉력 측정 센서"}, {"y": "2011", "t": "전기철도 차량 집전장치의 접촉력 측정 센서"}, {"y": "2012", "t": "공기유동터널 생성장치"}, {"y": "2012", "t": "실시간 전동차 방송 시스템 및 그 방법"}, {"y": "2012", "t": "철도 차량용 판토그라프"}, {"y": "2013", "t": "불량률 최소화를 통한 강건 최적화의 확률제한조건 처리"}, {"y": "2013", "t": "철도차량 장치의 진동 및 충격시험 방법 비교 분석"}, {"y": "2013", "t": "철도차량 전면창유리 충격시험에 관한 연구"}, {"y": "2013", "t": "발사 장치"}, {"y": "2013", "t": "발사체 속도측정장치"}, {"y": "2014", "t": "제동 패드의 압축강도시편의 단면치수변화가 압축강도 불확도에 미치는 영향 분석"}, {"y": "2014", "t": "철도차량 차륜의 기계적 특성 및 잔류응력평가"}, {"y": "2014", "t": "열차분리결합 제어방법"}, {"y": "2014", "t": "열차의 모진 주행에 대한 경보 제공 시스템 및 방법"}, {"y": "2014", "t": "충돌시험장치 및 이를 이용한 충돌시험방법"}, {"y": "2014", "t": "태양광 모듈"}, {"y": "2015", "t": "외란 신호 검지 기능을 갖는 차상장치 및 그 장치를 이용한 외란 신호 검지 방법"}, {"y": "2015", "t": "전기철도차량의 제동패드 냉각 및 분진 흡수 시스템 및 방법"}, {"y": "2016", "t": "선형인공신경망을 이용한 직류 전철변전소의 RC 회로정수 추정"}, {"y": "2016", "t": "자동폐색장치를 활용한 일반철도 노선의 철도선로변 작업자용 안전설비 시스템"}, {"y": "2016", "t": "철도차량용 공기압축기의 진동 테스트 장치와 이를 이용하여 균형추를 설계하는 방법"}, {"y": "2017", "t": "철도분야 시험기술 분석에 관한 연구"}, {"y": "2018", "t": "특허분석을 통한 철도차량용 추진제어장치 기술 분석"}, {"y": "2021", "t": "열차용 자동운전장치의 시험 장치 및 방법"}, {"y": "2022", "t": "분산형 음향 검지기술로 측정된 진동 데이터의 이미지 변환을 통한 레일절손 검지 방법"}, {"y": "2022", "t": "열차 관제장치 및 그 관제방법"}, {"y": "2023", "t": "복합 방식 레일절손 판단시스템 및 이를 이용한 레일절손 판단방법"}];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 // 승차권 미세 인쇄(실제 승차권의 위조 방지 미세 글자처럼 연구 제목을 아주 작게) · 전체 목록
-(function(){const m=document.getElementById('micro');const t=TITLES.map(x=>x.t).join(' · ');m.textContent=t+' · '+t;
+(function(){
   const sh=document.getElementById('shelf');TITLES.forEach(x=>{const li=document.createElement('li'),i=document.createElement('i');i.textContent=x.y;li.appendChild(i);li.appendChild(document.createTextNode(x.t));sh.appendChild(li)})})();
 // 음악
 const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='none';au.volume=0;let on=false,f;const b=document.getElementById('bgm');
@@ -288,23 +237,12 @@ const BGM=(function(){const au=new Audio('bgm.mp3');au.loop=true;au.preload='non
   b.addEventListener('click',()=>on?stop():start());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)au.pause();else if(on)au.play().catch(()=>{})});
   return {start}})();
-// 자동발매기
-(function(){const k=document.getElementById('kiosk'),m=document.getElementById('machine'),is=document.getElementById('issue');
-  is.addEventListener('click',()=>{is.disabled=true;is.textContent='발권 중…';BGM.start();m.classList.add('printing');
-    setTimeout(()=>{m.classList.add('done');is.textContent='발권 완료';document.getElementById('take').focus()},reduce?0:1700)});
-  document.getElementById('take').addEventListener('click',()=>{k.classList.add('gone');setTimeout(()=>{k.hidden=true},450)});
+// 첫 화면: 종착역 도착
+(function(){const a=document.getElementById('arrive'),ps=[...document.querySelectorAll('#ann p')],off=document.getElementById('off');
+  ps.forEach((p,i)=>setTimeout(()=>p.classList.add('on'),reduce?0:600+i*1500));
+  setTimeout(()=>off.classList.add('on'),reduce?0:600+ps.length*1500);
+  off.addEventListener('click',()=>{BGM.start();a.classList.add('gone');setTimeout(()=>{a.hidden=true},600)});
 })();
-// 검표(찢기)
-let used=false;
-function punch(){if(used)return;used=true;document.getElementById('ticket').classList.add('used');document.getElementById('after').textContent='검표가 끝났어요. 좋은 여행 되세요';document.getElementById('board').hidden=true;
-  setTimeout(()=>document.getElementById('itin').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}),reduce?0:1400)}
-document.getElementById('board').addEventListener('click',punch);
-(function(){const g=document.getElementById('grip'),st=document.getElementById('stub');let y0=null,dy=0;
-  g.addEventListener('pointerdown',e=>{if(used)return;y0=e.clientY;dy=0;st.classList.add('dragging');try{g.setPointerCapture(e.pointerId)}catch(_){}});
-  g.addEventListener('pointermove',e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);const d=Math.min(dy,80);st.style.transform='translateY('+(d*.3)+'px) rotate('+(d*.025)+'deg)'});
-  const end=e=>{if(y0===null)return;if(e&&e.clientY!=null)dy=Math.max(dy,e.clientY-y0);y0=null;st.classList.remove('dragging');st.style.transform='';if(dy>50)punch()};
-  g.addEventListener('pointerup',end);g.addEventListener('pointercancel',end);
-  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();punch()}});})();
 </script>
 
 </body></html>
