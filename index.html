@@ -355,7 +355,7 @@ const BGM=(function(){
   const btn=document.getElementById('bgm'),lab=document.getElementById('bgmt');
   function ramp(to,ms,done){clearInterval(fade);const from=au.volume,t0=performance.now();fade=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);au.volume=from+(to-from)*k;if(k>=1){clearInterval(fade);done&&done()}},40)}
   function ui(){btn.hidden=false;btn.classList.toggle('on',on);btn.setAttribute('aria-pressed',on);lab.textContent=on?'음악 끄기':'음악 켜기'}
-  function start(){on=true;ui();au.play().then(()=>ramp(.75,2500)).catch(()=>{on=false;ui()})}
+  function start(){on=true;ui();au.play().then(()=>ramp(.5,2500)).catch(()=>{on=false;ui()})}
   function stop(){on=false;ui();ramp(0,600,()=>au.pause())}
   btn.addEventListener('click',()=>on?stop():start());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)au.pause();else if(on)au.play().catch(()=>{})});
