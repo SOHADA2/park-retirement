@@ -107,7 +107,9 @@ body.idle{cursor:none}
   var rows=[],seen={},queue=[],idx=-1,timer=null;
   function load(){if(!API||API.indexOf('http')!==0)return;var xh=new XMLHttpRequest();xh.open('GET',API+'&pageSize=300&orderBy=t');
     xh.onload=function(){try{var d=JSON.parse(xh.responseText),docs=(d&&d.documents)||[],first=!rows.length;
-      docs.forEach(function(o){if(seen[o.name])return;seen[o.name]=1;var r={name:o.fields.name.stringValue,msg:o.fields.msg.stringValue,t:o.fields.t.timestampValue};rows.push(r);if(!first)queue.push(rows.length-1)});
+      var here={};docs.forEach(function(o){here[o.name]=1});
+      var keep=rows.filter(function(r){return here[r.doc]});if(keep.length!==rows.length){var curDoc=rows[idx]&&rows[idx].doc;rows=keep;queue=[];idx=-1;rows.forEach(function(r,i){if(r.doc===curDoc)idx=i})}   // 지운 메모 빼기
+      docs.forEach(function(o){if(seen[o.name])return;seen[o.name]=1;var r={doc:o.name,name:o.fields.name.stringValue,msg:o.fields.msg.stringValue,t:o.fields.t.timestampValue};rows.push(r);if(!first)queue.push(rows.length-1)});
       if(first&&rows.length&&idx<0)next()}catch(e){}};xh.send()}
   function size(n){return n<60?56:n<140?48:n<260?40:n<420?34:29}
   function show(i){var r=rows[i];note.className='note';setTimeout(function(){

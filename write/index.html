@@ -33,6 +33,7 @@ button[disabled]{background:#8D96A3;cursor:default}
 .preview{margin-top:14px;padding:14px;background:#F6F7F9;border-left:3px solid var(--ink);white-space:pre-wrap;font-size:14.5px}
 .preview b{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
 .foot{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:center}
+.del{margin-top:14px;font:inherit;font-size:14px;color:#5E6672;background:none;border:1px solid #D6DADF;border-radius:4px;padding:8px 14px;cursor:pointer}
 </style></head><body>
 <main class="wrap">
   <header>
@@ -52,10 +53,31 @@ button[disabled]{background:#8D96A3;cursor:default}
     <p>고마워요. 퇴임 축하 페이지에서 바로 볼 수 있어요.</p>
     <a href="../#notes">퇴임 축하 페이지에서 보기 →</a>
     <div class="preview" id="pv"></div>
+    <button type="button" class="del" id="del" hidden>이 메모 지우기</button>
   </section>
-  <p class="foot">한 번 보낸 메모는 고칠 수 없어요. 고치고 싶으면 다시 보내 주세요. 이전 것은 정리해 드릴게요.</p>
+  <p class="foot">보낸 메모는 고칠 수 없어요. 이 폰에서 보낸 메모는 축하 페이지의 메모 아래 「지우기」로 지우고 다시 보낼 수 있어요.</p>
 </main>
 <script>
+// 메모 지우기용 로그인 도우미(빌드가 메인·메모 쓰기·관리 페이지에 넣음). Firebase 인증을 SDK 없이 REST 로.
+// 메모를 쓰는 폰은 익명 계정을 자동으로 만들어 localStorage(pck_auth)에 둔다 → 같은 폰에서 자기 메모(uid 같음)를 지울 수 있음.
+// 관리자는 이메일·비밀번호로 로그인(토큰은 메모리에만). 실제 허락은 firebase/firestore.rules 가 한다.
+var PCK=(function(){var API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04',KEY=(API.match(/key=([^&]+)/)||[])[1]||'',FS='https://firestore.googleapis.com/v1/';
+  function load(){try{return JSON.parse(localStorage.getItem('pck_auth')||'null')}catch(e){return null}}
+  function save(s){try{localStorage.setItem('pck_auth',JSON.stringify(s))}catch(e){}return s}
+  function post(url,body,form){return fetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:body}).then(function(r){if(!r.ok)throw new Error('auth '+r.status);return r.json()})}
+  function refresh(rt){return post('https://securetoken.googleapis.com/v1/token?key='+KEY,'grant_type=refresh_token&refresh_token='+encodeURIComponent(rt),true)
+    .then(function(j){return {id:j.id_token,rt:j.refresh_token,uid:j.user_id,exp:Date.now()+(+j.expires_in)*1000}})}
+  // 익명 계정 토큰(없으면 만들고, 만료가 가까우면 새로 받음)
+  function mine(){var s=load();if(s&&s.exp>Date.now()+60000)return Promise.resolve(s);
+    var p=s&&s.rt?refresh(s.rt).then(save):Promise.reject();
+    return p.catch(function(){return post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+KEY,JSON.stringify({returnSecureToken:true}))
+      .then(function(j){return save({id:j.idToken,rt:j.refreshToken,uid:j.localId,exp:Date.now()+(+j.expiresIn)*1000})})})}
+  function admin(email,pw){return post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+KEY,JSON.stringify({email:email,password:pw,returnSecureToken:true}))
+    .then(function(j){return {id:j.idToken,uid:j.localId}})}
+  // docName = 'projects/…/documents/notes/<id>'
+  function del(docName,tok){return fetch(FS+docName,{method:'DELETE',headers:{Authorization:'Bearer '+tok.id}}).then(function(r){if(!r.ok)throw new Error('delete '+r.status)})}
+  return {mine:mine,admin:admin,del:del,myUid:function(){var s=load();return s&&s.uid||''}}})();
+
 const API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04';
 const f=document.getElementById('f'),nm=document.getElementById('name'),ms=document.getElementById('msg'),er=document.getElementById('err'),bt=document.getElementById('send');
 const q=new URLSearchParams(location.search);if(q.get('n'))nm.value=q.get('n').slice(0,20);
@@ -67,10 +89,18 @@ f.addEventListener('submit',async e=>{e.preventDefault();er.hidden=true;
   if(!msg){er.textContent='메모 내용을 적어 주세요';er.hidden=false;ms.focus();return}
   if(!API||API.indexOf('http')!==0){er.textContent='아직 메모함이 준비되지 않았어요. 조금 뒤에 다시 시도해 주세요';er.hidden=false;return}
   bt.disabled=true;bt.textContent='보내는 중…';
-  try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{name:{stringValue:name},msg:{stringValue:msg},t:{timestampValue:new Date().toISOString()}}})});
+  try{const fields={name:{stringValue:name},msg:{stringValue:msg},t:{timestampValue:new Date().toISOString()}};
+    const send=(tok)=>fetch(API,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},tok?{Authorization:'Bearer '+tok.id}:{}),
+      body:JSON.stringify({fields:tok?Object.assign({uid:{stringValue:tok.uid}},fields):fields})});
+    let tok=null;try{tok=await PCK.mine()}catch(e){}            // 익명 로그인이 꺼져 있으면 예전처럼
+    let r=await send(tok);if(!r.ok&&tok)r=await send(null);      // 규칙이 아직 예전 것이면 uid 없이
     if(!r.ok)throw new Error('HTTP '+r.status);
+    const doc=await r.json(),mineDoc=doc.fields&&doc.fields.uid?doc.name:'';
     try{localStorage.removeItem('pck_draft')}catch(e){}
     f.hidden=true;const pv=document.getElementById('pv');pv.innerHTML='';const b=document.createElement('b');b.textContent=name;pv.appendChild(b);pv.appendChild(document.createTextNode(msg));document.getElementById('done').hidden=false;
+    const dx=document.getElementById('del');dx.hidden=!mineDoc;dx.onclick=async()=>{if(!confirm('방금 보낸 메모를 지울까요?'))return;dx.disabled=true;
+      try{await PCK.del(mineDoc,await PCK.mine());pv.innerHTML='';dx.hidden=true;document.querySelector('#done h2').textContent='메모를 지웠어요';
+        document.querySelector('#done p').textContent='다시 쓰려면 이 페이지를 새로 열어 주세요.'}catch(e){dx.disabled=false;alert('지우지 못했어요. 잠시 뒤 다시 눌러 주세요')}};
   }catch(err){er.textContent='보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요';er.hidden=false;bt.disabled=false;bt.textContent='메모 보내기'}
 });
 </script>

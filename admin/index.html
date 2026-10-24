@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>메모 관리</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 메모 관리(site/admin/): 관리자 이메일·비밀번호로 로그인하면 모든 메모를 지울 수 있음. 허락은 firebase/firestore.rules 가 한다. */
+:root{--page:#E9ECEF;--paper:#fff;--ink:#1B1F24;--sub:#5E6672;--faint:#9AA1AB;--rule:#D6DADF;--blue:#1C4E9C;--red:#C21F32}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--page);color:var(--ink);font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:15px;line-height:1.6;word-break:keep-all;padding:28px 16px 60px}
+main{max-width:520px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px}
+.lead{color:var(--sub);font-size:13.5px;margin:0 0 18px}
+form{background:var(--paper);padding:18px 16px;display:grid;gap:10px}
+label{font-size:13px;color:var(--sub)}
+input{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--rule);border-radius:4px}
+button{font:inherit;cursor:pointer;border-radius:4px}
+.go{background:var(--ink);color:#fff;border:0;padding:11px;font-weight:600}
+.err{color:var(--red);font-size:13.5px;margin:0}
+.bar{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 10px;font-size:13px;color:var(--sub)}
+.bar button{background:none;border:1px solid var(--rule);padding:4px 10px;font-size:12.5px;color:var(--sub)}
+article{background:var(--paper);padding:14px 16px 12px;border-left:3px solid var(--blue);margin-bottom:10px}
+article p{margin:0;white-space:pre-wrap;font-size:14.5px;line-height:1.7}
+article footer{display:flex;align-items:baseline;gap:10px;margin-top:8px;padding-top:6px;border-top:1px solid var(--rule)}
+article footer b{font-size:13.5px}
+article footer span{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--faint)}
+article footer button{margin-left:auto;background:none;border:1px solid var(--red);color:var(--red);padding:3px 12px;font-size:12.5px}
+</style></head><body><main>
+<h1>메모 관리</h1>
+<p class="lead">관리자만 들어올 수 있어요. 지운 메모는 되살릴 수 없어요.</p>
+<form id="f"><label for="em">관리자 이메일</label><input id="em" type="email" autocomplete="username" required>
+  <label for="pw">비밀번호</label><input id="pw" type="password" autocomplete="current-password" required>
+  <p class="err" id="err" hidden></p><button class="go" id="go">들어가기</button></form>
+<section id="list" hidden><div class="bar"><span id="cnt"></span><button id="out" type="button">나가기</button></div><div id="box"></div></section>
+</main>
+<script>
+// 메모 지우기용 로그인 도우미(빌드가 메인·메모 쓰기·관리 페이지에 넣음). Firebase 인증을 SDK 없이 REST 로.
+// 메모를 쓰는 폰은 익명 계정을 자동으로 만들어 localStorage(pck_auth)에 둔다 → 같은 폰에서 자기 메모(uid 같음)를 지울 수 있음.
+// 관리자는 이메일·비밀번호로 로그인(토큰은 메모리에만). 실제 허락은 firebase/firestore.rules 가 한다.
+var PCK=(function(){var API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04',KEY=(API.match(/key=([^&]+)/)||[])[1]||'',FS='https://firestore.googleapis.com/v1/';
+  function load(){try{return JSON.parse(localStorage.getItem('pck_auth')||'null')}catch(e){return null}}
+  function save(s){try{localStorage.setItem('pck_auth',JSON.stringify(s))}catch(e){}return s}
+  function post(url,body,form){return fetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:body}).then(function(r){if(!r.ok)throw new Error('auth '+r.status);return r.json()})}
+  function refresh(rt){return post('https://securetoken.googleapis.com/v1/token?key='+KEY,'grant_type=refresh_token&refresh_token='+encodeURIComponent(rt),true)
+    .then(function(j){return {id:j.id_token,rt:j.refresh_token,uid:j.user_id,exp:Date.now()+(+j.expires_in)*1000}})}
+  // 익명 계정 토큰(없으면 만들고, 만료가 가까우면 새로 받음)
+  function mine(){var s=load();if(s&&s.exp>Date.now()+60000)return Promise.resolve(s);
+    var p=s&&s.rt?refresh(s.rt).then(save):Promise.reject();
+    return p.catch(function(){return post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+KEY,JSON.stringify({returnSecureToken:true}))
+      .then(function(j){return save({id:j.idToken,rt:j.refreshToken,uid:j.localId,exp:Date.now()+(+j.expiresIn)*1000})})})}
+  function admin(email,pw){return post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+KEY,JSON.stringify({email:email,password:pw,returnSecureToken:true}))
+    .then(function(j){return {id:j.idToken,uid:j.localId}})}
+  // docName = 'projects/…/documents/notes/<id>'
+  function del(docName,tok){return fetch(FS+docName,{method:'DELETE',headers:{Authorization:'Bearer '+tok.id}}).then(function(r){if(!r.ok)throw new Error('delete '+r.status)})}
+  return {mine:mine,admin:admin,del:del,myUid:function(){var s=load();return s&&s.uid||''}}})();
+
+(function(){const API='https://firestore.googleapis.com/v1/projects/park-retirement-2610/databases/(default)/documents/notes?key=AIzaSyBZsj0Z2nIA7YWi4Ty0Fkn-zELn-eUxX04',f=document.getElementById('f'),er=document.getElementById('err'),go=document.getElementById('go'),box=document.getElementById('box'),cnt=document.getElementById('cnt');let tok=null;
+  const fail=t=>{er.textContent=t;er.hidden=false;go.disabled=false;go.textContent='들어가기'};
+  f.addEventListener('submit',e=>{e.preventDefault();er.hidden=true;go.disabled=true;go.textContent='확인 중…';
+    PCK.admin(document.getElementById('em').value.trim(),document.getElementById('pw').value).then(t=>{tok=t;f.hidden=true;document.getElementById('list').hidden=false;show()})
+      .catch(()=>fail('이메일이나 비밀번호가 맞지 않아요'))});
+  document.getElementById('out').onclick=()=>{tok=null;location.reload()};
+  function show(){box.textContent='불러오는 중…';fetch(API+'&pageSize=300&orderBy=t').then(r=>r.json()).then(d=>{const docs=(d&&d.documents)||[];box.innerHTML='';cnt.textContent='메모 '+docs.length+'개';
+    docs.slice().reverse().forEach(x=>{const a=document.createElement('article'),p=document.createElement('p'),ft=document.createElement('footer'),b=document.createElement('b'),s=document.createElement('span'),k=document.createElement('button');
+      p.textContent=x.fields.msg.stringValue;b.textContent=x.fields.name.stringValue;const t=new Date(x.fields.t.timestampValue);s.textContent=isNaN(t)?'':(t.getMonth()+1)+'.'+t.getDate()+' '+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0');
+      k.textContent='지우기';k.onclick=()=>{if(!confirm('「'+b.textContent+'」 님의 메모를 지울까요? 되살릴 수 없어요.'))return;k.disabled=true;
+        PCK.del(x.name,tok).then(()=>{a.remove();cnt.textContent='메모 '+box.children.length+'개'}).catch(()=>{k.disabled=false;alert('지우지 못했어요. 관리자 설정(Firebase 규칙)을 확인해 주세요')})};
+      ft.appendChild(b);ft.appendChild(s);ft.appendChild(k);a.appendChild(p);a.appendChild(ft);box.appendChild(a)})}).catch(()=>{box.textContent='메모를 불러오지 못했어요'})}
+})();
+</script>
+</body></html>
