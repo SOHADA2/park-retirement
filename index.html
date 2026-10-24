@@ -107,6 +107,24 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
 .rail button.on{background:var(--blue);transform:scale(1.35)}
 .rail-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin:6px 0 0}
 
+/* ── 함께 달린 열차: 처음 연구한 해 · 이름·한 줄 · 건수(늘 보임), 제목은 펼치기 */
+.trains{list-style:none;margin:14px 0 0;padding:0;border-top:2px solid var(--ink)}
+.trains>li{display:grid;grid-template-columns:76px 1fr auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.trains>li>.y{font-family:var(--mono);font-size:12px;color:var(--sub);padding-top:3px}
+.trains>li b{display:block;font-size:16px}
+.trains>li div>span{display:block;font-size:13px;color:var(--sub);margin-top:2px}
+.trains>li>em{font-style:normal;font-family:var(--mono);font-size:22px;font-weight:500;line-height:1.1;text-align:right}
+.trains>li.most>em,.trains>li.most b{color:var(--blue)}
+.trains>li>em small{font-family:var(--sans);font-size:12px;color:var(--sub);margin-left:2px}
+.trains details{margin-top:4px}
+.trains summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--blue);padding:4px 0;list-style:none}
+.trains summary::-webkit-details-marker{display:none}
+.trains summary::after{content:" ▾"}.trains details[open] summary::after{content:" ▴"}
+.trains ol{list-style:none;margin:2px 0 0;padding:4px 0 0;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.5;color:var(--sub)}
+.trains ol li{display:grid;grid-template-columns:36px 1fr;gap:6px;padding:3px 0}
+.trains ol i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--faint);padding-top:2px}
+.trains ol s{text-decoration:none;font-size:10.5px;font-weight:600;color:var(--blue);border:1px solid var(--blue);border-radius:3px;padding:0 4px;margin-left:6px;white-space:nowrap}
+
 /* ── 숫자로 보는 연구(입사 연도가 애매해 근무 연수·날수는 넣지 않음) */
 .nums{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);margin-top:14px}
 .nums .n{background:var(--page);padding:14px 10px 14px 0}
@@ -256,6 +274,13 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:6px 0 6px;text-wr
       <li class="now"><span class="y">2026.10</span><div><b>퇴임</b><span>그동안 정말 고생하셨습니다</span></div></li>
       <li class="next"><span class="y">다음</span><div><b>행복한 인생 2막</b><span>좌석은 평생 VIP석으로 예약해 두었어요</span></div></li>
     </ol>
+  </section>
+
+  <section aria-labelledby="h-trn" id="trains">
+    <div class="eyebrow">함께 달린 열차</div>
+    <h2 id="h-trn">박사님 연구와 함께 달린 열차들</h2>
+    <p class="lead">처음 연구한 해 순서대로 놓았어요. 오른쪽 숫자는 그 열차를 다룬 논문·특허 수예요</p>
+    <ol class="trains"><li><span class="y">1997</span><div><b>새마을호</b><span>앞뒤에 동력차가 달린 새마을호의 진동을 줄이는 연구</span><details><summary>제목 1개 보기</summary><ol><li><i>1997</i>전후동력 새마을호 철도차량의 진동성능 개선에 관한 연구</li></ol></details></div><em>1<small>건</small></em></li><li><span class="y">1998–2003</span><div><b>경부고속철도 · KTX</b><span>경부고속철도 차량의 주행 안정성 해석, KTX 견인·제동 성능 계측</span><details><summary>제목 2개 보기</summary><ol><li><i>1998</i>Vampire를 이용한 경부고속철도 차량의 동적 안정성 해석</li><li><i>2003</i>KTX 견인, 재동성능용 계측시스템 구축</li></ol></details></div><em>2<small>건</small></em></li><li><span class="y">1998–1999</span><div><b>경량전철</b><span>마디로 이어진 경량전철의 현가장치 설계와 주행 성능 해석</span><details><summary>제목 2개 보기</summary><ol><li><i>1998</i>관절형 경량전철의 현가특성 설계 및 안정성 해석</li><li><i>1999</i>관절형 경량전철의 주행성능 해석</li></ol></details></div><em>2<small>건</small></em></li><li><span class="y">2000–2001</span><div><b>G7 고속전철</b><span>국책 G7 사업의 고속전철 개발, 경부고속철도 시험선에서 주행 특성 검토</span><details><summary>제목 2개 보기</summary><ol><li><i>2000</i>G7 고속전철기술개발사업과 동역학 및 제어분야 기술개발</li><li><i>2001</i>경부고속철도 시험선 구간에서 G7 고속전철 차량의 동특성 검토</li></ol></details></div><em>2<small>건</small></em></li><li><span class="y">2001–2012</span><div><b>도시철도 · 전동차</b><span>도시철도 차량이 지나갈 공간(차량한계), 바퀴 마모, 전동차 방송 시스템</span><details><summary>제목 4개 보기</summary><ol><li><i>2001</i>도시철도차량의 동적 차량한계 설정에 관한 연구</li><li><i>2002</i>도시철도 차량의 동적거동을 고려한 차량한계 해석</li><li><i>2006</i>도시철도차량의 차륜마모에 따른 횡가속도 패턴분석</li><li><i>2012</i>실시간 전동차 방송 시스템 및 그 방법<s>특허</s></li></ol></details></div><em>4<small>건</small></em></li><li class="most"><span class="y">2002–2010</span><div><b>한국형 고속열차</b><span>시운전 시험으로 승차감·진동을 재고 350km/h 주행시험까지</span><details><summary>제목 29개 보기</summary><ol><li><i>2002</i>반응표면모델을 이용한 한국형 고속전철 현가장치의 효율적인 최적설계</li><li><i>2002</i>비선형 크립이론을 이용한 한국형 고속전철의 동특성 해석</li><li><i>2003</i>시운전 시험을 통한 한국형 고속전철 차체진동 특성의 분석 및 평가</li><li><i>2003</i>시운전 시험을 통한 한국형 고속전철에 대한 승차감의 분석</li><li><i>2003</i>시운전 시험을 통한 한국형 고속전철의 차체진동 특성</li><li><i>2003</i>한국형 고속전철의 기계 제동력 측정 방법</li><li><i>2003</i>한국형 고속전철의 주행시험과 이론해석 결과의 비교분석</li><li><i>2003</i>한국형 고속전철의 주행시험을 통한 진동 모드 분석 연구</li><li><i>2003</i>한국형 고속전철의 주행조건에 따른 진동특성 분석에 관한 연구</li><li><i>2003</i>한국형 고속전철의 주행진동 특성에 관한 연구</li><li><i>2003</i>한국형 고속전철의 진동가속도 시험 연구</li><li><i>2003</i>한국형 고속전철의 차체 진동특성 분석</li><li><i>2004</i>시험을 통한 한국형 고속전철 차량의 속도에 따른 실내소음 수준분석</li><li><i>2004</i>한국형 고속전철 개발열차의 차량별 속도에 따른 실내 소음 특성 분석</li><li><i>2004</i>한국형 고속전철 현가장치 최적설계를 위한 반응표면모델과 유전자 알고리즘 모델에 관한 연구</li><li><i>2004</i>한국형 고속전철의 기존선 주행 진동가속도 특성 분석 - 곡선 통과속도 중심으로</li><li><i>2005</i>시운전 시험을 통한 한국형 고속열차의 승차감 변화추세에 관한 연구</li><li><i>2005</i>한국형 고속열차 전력시스템 특성 연구</li><li><i>2005</i>한국형 고속열차의 350km/h 본선 주행시험을 통해 본 고속열차용 팬터그래프의 이선 특성과 동적 특성 고찰</li><li><i>2005</i>한국형 고속전철의 350Km/h 주행에 대한 진동 가속도 분석</li><li><i>2006</i>UIC 518의 진동 가속도 계측을 통한 한국형 고속전철의 350km/h 주행 동적 거동 평가</li><li><i>2006</i>한국형 고속열차 신뢰성 시험평가 요건관리 체계 구축</li><li><i>2006</i>한국형 고속열차 전기시스템 특성 연구</li><li><i>2006</i>한국형고속열차 차량시스템의 신뢰성 성장 평가</li><li><i>2006</i>한국형고속열차 횡방향 진동제어</li><li><i>2006</i>한국형고속열차의 가속도계를 이용한 궤도 불규칙도 검측</li><li><i>2006</i>한국형고속열차의 디스크-패드 마찰계수 측정에 관한 연구</li><li><i>2008</i>한국형 고속열차의 공익적 목적 활용방안 대안 연구</li><li><i>2010</i>신한국형고속열차의 주행저항 성능시험</li></ol></details></div><em>29<small>건</small></em></li><li><span class="y">2006</span><div><b>한국형 틸팅열차</b><span>곡선에서 차체를 기울이는 틸팅열차의 움직임을 재는 방법</span><details><summary>제목 1개 보기</summary><ol><li><i>2006</i>한국형틸팅열차의 효과적인 동적 거동 측정 방안 도출</li></ol></details></div><em>1<small>건</small></em></li><li><span class="y">2006–2010</span><div><b>차세대 고속열차</b><span>다음 세대 고속열차의 현가장치 설계와 주행 안전성</span><details><summary>제목 4개 보기</summary><ol><li><i>2006</i>차세대 고속철도기술개발사업 추진방향</li><li><i>2008</i>개념단계에서 차세대고속철도 6량 편성차량의 현가요소 특성 분석</li><li><i>2008</i>개념적 관점에서 차세대고속철도차량의 현가요소 특성 분석</li><li><i>2010</i>고저틀림에 따른 차세대고속열차의 주행안전성 영향 분석</li></ol></details></div><em>4<small>건</small></em></li></ol>
   </section>
 
   <section aria-labelledby="h-rec">
